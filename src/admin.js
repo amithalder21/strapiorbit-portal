@@ -2104,12 +2104,12 @@ async function _load360(tenant) {
         
         return '<div class="data-pair">' +
           '<span class="dp-lbl">' + lbl + '</span>' +
-          '<span class="dp-val">' +
-            '<span style="font-size:12px; color:var(--muted);">' + dt + '</span>' +
-            '<span style="font-size:12px; color:var(--muted); width:70px; text-align:right;">' + sz + '</span>' +
-            (b.status === 'done' 
+          '<span class="dp-val" style="display:flex;align-items:center;gap:10px;justify-content:flex-end;">' +
+            '<span style="font-size:11px;color:var(--muted);font-family:\'Source Code Pro\',\'SFMono-Regular\',\'DM Mono\',monospace;">' + dt + '</span>' +
+            '<span style="font-size:11px;color:var(--faint);font-family:\'Source Code Pro\',\'SFMono-Regular\',\'DM Mono\',monospace;min-width:56px;text-align:right;">' + sz + '</span>' +
+            (b.status === 'done'
               ? '<button class="btn btn-xs btn-ghost" onclick="adminDownloadBackup(\'' + _esc(t.tenant) + '\',\'' + _esc(b.id) + '\')">Download</button>'
-              : '<span style="color:' + sc + '; font-size:11px; width:80px; text-align:right;">' + b.status.toUpperCase() + '</span>') +
+              : '<span style="color:' + sc + ';font-size:10px;font-family:\'Source Code Pro\',\'SFMono-Regular\',\'DM Mono\',monospace;letter-spacing:0.5px;min-width:56px;text-align:right;">' + b.status.toUpperCase() + '</span>') +
           '</span>' +
         '</div>';
       }).join('');
@@ -2687,9 +2687,8 @@ async function openOrgDetail(orgId) {
         '<div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">' + tenantsHtml + '</div>' +
       '</div>' +
 
-      '<div class="modal-btns" style="border-top:1px solid var(--border);padding-top:20px;margin-top:20px;">' +
+      '<div class="modal-btns" style="border-top:1px solid var(--border);padding-top:20px;margin-top:4px;">' +
         '<button class="btn btn-sm" onclick="openAdminTransferOwner(\'' + _esc(orgId) + '\',\'' + _esc(org.name||'') + '\')">TRANSFER OWNERSHIP</button>' +
-        '<button class="btn btn-sm" style="border:1px solid var(--border2);color:var(--text);" onclick="closeOrgDetail()">CLOSE</button>' +
       '</div>';
   } catch(e) {
     document.getElementById('odm-body').innerHTML = '<div style="padding:24px;color:var(--red);">Error: ' + _esc(e.message) + '</div>';
