@@ -450,7 +450,7 @@ function renderTenantCard(t, i) {
     <div class="itab-panel" id="panel-team-${tid}">
       <div style="padding:32px 24px;text-align:center;">
         <div style="font-size:32px;margin-bottom:12px;">&#x1F465;</div>
-        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">Team management requires Pro</div>
+        <div style="font-size:15px;font-weight:500;margin-bottom:8px;">Team management requires Pro</div>
         <div style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto 20px;">
           Starter is a solo workspace. Upgrade to <strong>Pro</strong> to invite teammates,
           manage roles, and deploy up to 5 instances under a verified corporate domain.
@@ -462,14 +462,14 @@ function renderTenantCard(t, i) {
     <div class="itab-panel" id="panel-team-${tid}">
       <!-- ── Team members ─────────────────────────────────────── -->
       <div style="padding:20px 24px 0;">
-        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">Team members</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;">Team members</div>
         <div style="font-size:12px;color:var(--muted);">Everyone with access to this organisation.</div>
       </div>
       <div id="team-list-${tid}" style="margin:12px 0 0;"></div>
 
       <!-- ── Invite new member ─────────────────────────────────── -->
       <div style="padding:20px 24px;border-top:1px solid var(--border);margin-top:4px;">
-        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">Invite member</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;">Invite member</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Send an invitation by email. They'll be added automatically on sign-up.</div>
         <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;">
           <input class="env-input" id="team-email-${tid}" type="email" placeholder="colleague@company.com" style="min-width:0;">
@@ -492,7 +492,7 @@ function renderTenantCard(t, i) {
       <!-- ── Transfer ownership ─────────────────────────────────── -->
       ${(t.is_instance_owner || ROLE_RANK[role] >= 3) ? `
       <div style="padding:20px 24px;border-top:1px solid var(--border);">
-        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">Transfer ownership</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;">Transfer ownership</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Hand full control to another org member. You retain your current role after transfer.</div>
         <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;">
           <select class="env-input" id="transfer-to-${tid}" style="min-width:0;font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;">

@@ -1510,7 +1510,7 @@ footer {
 .itab.active {
   color:var(--accent);
   border-bottom-color:var(--accent);
-  font-weight:600;
+  font-weight:500;
   background: var(--bg-surface);
 }
 .itab.building-indicator { color:var(--amber); }
@@ -1650,19 +1650,24 @@ footer {
 .data-val a { color:var(--accent); text-decoration:none; }
 .data-val a:hover { text-decoration:underline; }
 .pact {
-  padding:7px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 14px;
   border-radius: var(--radius-btn);
-  font-size:11px;
-  font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:0.5px;
-  cursor:pointer;
-  font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;
-  transition:background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-  border:1px solid var(--border);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  font-family: 'Source Code Pro', 'SFMono-Regular', 'DM Mono', monospace;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  border: 1px solid var(--border);
   background: var(--bg-surface);
-  color:var(--muted);
-  white-space:nowrap;
+  color: var(--muted);
+  white-space: nowrap;
+  line-height: 1;
 }
 .pact:hover {
   color:var(--text);
@@ -1898,6 +1903,27 @@ body.is-viewer button[data-action]:not([data-viewer-safe]) {
 .portal-user-info { font-size:12px; color:var(--muted); }
 .portal-user-info strong { color:var(--text); font-weight:500; }
 .portal-topbar-actions { display:flex; gap:6px; }
+
+/* ── Bottom "Home" link ── */
+.portal-home-link {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.portal-home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-family: 'sohne-var', 'Inter', 'SF Pro Display', sans-serif;
+  font-feature-settings: 'ss01' 1;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 8px 0;
+  transition: color 0.15s;
+  letter-spacing: normal;
+}
+.portal-home-btn:hover { color: var(--accent); }
 
 @keyframes tabReveal {
   from { opacity: 0; transform: translateY(6px); }
