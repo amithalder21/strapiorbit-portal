@@ -2090,7 +2090,7 @@ async function _load360(tenant) {
 
     // DB Backups
     html += '<div class="panel"><div class="panel-header"><div class="panel-header-left"><div class="panel-title">DB Backups</div><div class="panel-sub">Snapshot and disaster recovery metadata</div></div>' +
-      '<div class="panel-header-right"><button class="pact btn-sm" onclick="adminTriggerBackup(\'' + _esc(t.tenant) + '\')">Export Now</button></div>' +
+      '<div class="panel-header-right"><button class="btn btn-ghost btn-sm" onclick="adminTriggerBackup(\'' + _esc(t.tenant) + '\')">Export Now</button></div>' +
       '</div><div class="data-list" style="margin:0; border:none; box-shadow:none;" id="backup-list-' + _esc(t.tenant) + '">';
     var backups = d.backups || [];
     if (!backups.length) {
@@ -2108,7 +2108,7 @@ async function _load360(tenant) {
             '<span style="font-size:12px; color:var(--muted);">' + dt + '</span>' +
             '<span style="font-size:12px; color:var(--muted); width:70px; text-align:right;">' + sz + '</span>' +
             (b.status === 'done' 
-              ? '<button class="pact" style="font-size:11px; padding:3px 10px;" onclick="adminDownloadBackup(\'' + _esc(t.tenant) + '\',\'' + _esc(b.id) + '\')">Download</button>'
+              ? '<button class="btn btn-xs btn-ghost" onclick="adminDownloadBackup(\'' + _esc(t.tenant) + '\',\'' + _esc(b.id) + '\')">Download</button>'
               : '<span style="color:' + sc + '; font-size:11px; width:80px; text-align:right;">' + b.status.toUpperCase() + '</span>') +
           '</span>' +
         '</div>';
@@ -2531,20 +2531,20 @@ async function openOrgDetail(orgId) {
     var totalDollars = billing.total_revenue_cents ? '$' + (billing.total_revenue_cents / 100).toFixed(2) : '$0.00';
     var paidDollars  = billing.paid_cents          ? '$' + (billing.paid_cents          / 100).toFixed(2) : '$0.00';
     var billingSummary =
-      '<div style="margin-bottom:20px;border:1px solid var(--border);background:rgba(0,0,0,0.25);">' +
+      '<div style="margin-bottom:20px;border:1px solid var(--border);background:var(--bg3);border-radius:var(--radius-sm);overflow:hidden;">' +
         '<div style="padding:8px 16px;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);">Billing Summary</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;">' +
           '<div style="padding:12px 16px;border-right:1px solid var(--border);">' +
             '<div style="font-size:9px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Total Revenue</div>' +
-            '<div style="font-size:18px;font-weight:600;color:var(--green);">' + _esc(totalDollars) + '</div>' +
+            '<div style="font-size:18px;font-weight:500;color:var(--green);">' + _esc(totalDollars) + '</div>' +
           '</div>' +
           '<div style="padding:12px 16px;border-right:1px solid var(--border);">' +
             '<div style="font-size:9px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Paid</div>' +
-            '<div style="font-size:18px;font-weight:600;color:var(--accent2);">' + _esc(paidDollars) + '</div>' +
+            '<div style="font-size:18px;font-weight:500;color:var(--accent2);">' + _esc(paidDollars) + '</div>' +
           '</div>' +
           '<div style="padding:12px 16px;">' +
             '<div style="font-size:9px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Invoices</div>' +
-            '<div style="font-size:18px;font-weight:600;color:var(--text);">' + _esc(String(billing.invoice_count || 0)) + '</div>' +
+            '<div style="font-size:18px;font-weight:500;color:var(--text);">' + _esc(String(billing.invoice_count || 0)) + '</div>' +
           '</div>' +
         '</div>' +
         (billing.last_invoice_at ? '<div style="padding:6px 16px 10px;font-size:10px;color:var(--faint);">Last invoice: ' + _esc(String(billing.last_invoice_at).slice(0,10)) + '</div>' : '') +
@@ -2553,8 +2553,8 @@ async function openOrgDetail(orgId) {
     var membersHtml = members.length ? (
       '<table style="width:100%;border-collapse:collapse;font-size:13px;">' +
         '<thead><tr>' +
-          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Email</th>' +
-          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Role</th>' +
+          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:500;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Email</th>' +
+          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:500;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Role</th>' +
           '<th style="padding:6px 10px;border-bottom:1px solid var(--border);"></th>' +
         '</tr></thead>' +
         '<tbody>' +
@@ -2571,7 +2571,7 @@ async function openOrgDetail(orgId) {
               '</div>' +
             '</td>' +
             '<td style="padding:8px 10px;text-align:right;">' +
-              '<select id="' + selId + '" style="font-size:11px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:0;padding:4px 8px;margin-right:8px;vertical-align:middle;">' +
+              '<select id="' + selId + '" style="font-size:11px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-xs);padding:4px 8px;margin-right:8px;vertical-align:middle;">' +
                 ['owner','admin','member','viewer'].map(function(r) {
                   return '<option value="' + r + '"' + (r === m.role ? ' selected' : '') + '>' + r.toUpperCase() + '</option>';
                 }).join('') +
@@ -2588,8 +2588,8 @@ async function openOrgDetail(orgId) {
     var domainPanel = '';
     if (org.root_domain) {
       var verifyStatus = org.is_verified
-        ? '<span style="color:var(--green);font-weight:600;">&#10003; Verified — custom domain active</span>'
-        : '<span style="color:var(--amber);font-weight:600;">&#9675; Pending verification</span>';
+        ? '<span style="color:var(--green);font-weight:500;">&#10003; Verified — custom domain active</span>'
+        : '<span style="color:var(--amber);font-weight:500;">&#9675; Pending verification</span>';
       var verifyActions = org.is_verified ? '' :
         '<div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">' +
           '<button class="btn btn-xs btn-accent" id="adm-verify-btn-' + _esc(orgId) + '" onclick="adminVerifyOrgDomain(\'' + _esc(orgId) + '\',false)">Check DNS</button>' +
@@ -2603,7 +2603,7 @@ async function openOrgDetail(orgId) {
           '</div>'
         : '';
       domainPanel =
-        '<div style="margin-bottom:20px;border:1px solid var(--border);background:rgba(0,0,0,0.25);">' +
+        '<div style="margin-bottom:20px;border:1px solid var(--border);background:var(--bg3);border-radius:var(--radius-sm);overflow:hidden;">' +
           '<div style="padding:8px 16px;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border);">Domain Identity</div>' +
           '<div class="data-pair" style="padding:10px 16px;"><span class="dp-lbl">ROOT DOMAIN:</span><span class="dp-val" style="color:var(--accent2);font-family:\'DM Mono\',monospace;">' + _esc(org.root_domain) + '</span></div>' +
           '<div class="data-pair" style="padding:10px 16px;">' +
@@ -2619,10 +2619,10 @@ async function openOrgDetail(orgId) {
     var tenantsHtml = tenants.length ? (
       '<table style="width:100%;border-collapse:collapse;font-size:13px;">' +
         '<thead><tr>' +
-          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Instance</th>' +
-          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Active URL</th>' +
-          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Plan</th>' +
-          '<th style="text-align:right;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Status</th>' +
+          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:500;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Instance</th>' +
+          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:500;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Active URL</th>' +
+          '<th style="text-align:left;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:500;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Plan</th>' +
+          '<th style="text-align:right;padding:6px 10px;font-size:10px;color:var(--faint);font-weight:500;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);">Status</th>' +
           '<th style="padding:6px 10px;border-bottom:1px solid var(--border);"></th>' +
         '</tr></thead>' +
         '<tbody>' +
@@ -2637,12 +2637,12 @@ async function openOrgDetail(orgId) {
             : '';
           return '<tr>' +
             '<td style="padding:8px 10px;font-family:\'DM Mono\',monospace;font-size:12px;">' +
-               '<a href="/admin.html#tenants?search=' + encodeURIComponent(t.tenant) + '" style="color:var(--text);border-bottom:1px solid rgba(255,255,255,0.1);">' + _esc(t.tenant) + '</a>' +
+               '<a href="/admin.html#tenants?search=' + encodeURIComponent(t.tenant) + '" style="color:var(--text);border-bottom:1px solid var(--border);text-decoration:none;">' + _esc(t.tenant) + '</a>' +
                ownerLabel +
             '</td>' +
             '<td style="padding:8px 10px;font-family:\'DM Mono\',monospace;font-size:11px;color:' + urlColor + ';">' + _esc(activeUrl) + '</td>' +
             '<td style="padding:8px 10px;font-size:10px;color:var(--faint);letter-spacing:0.5px;">' + _esc(pkg) + '</td>' +
-            '<td style="padding:8px 10px;text-align:right;"><span style="color:' + sc + ';font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600;">' + _esc(t.status||'—') + '</span></td>' +
+            '<td style="padding:8px 10px;text-align:right;"><span style="color:' + sc + ';font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:500;">' + _esc(t.status||'—') + '</span></td>' +
             '<td style="padding:8px 10px;text-align:right;white-space:nowrap;">' +
               '<button class="btn btn-xs btn-accent" style="margin-right:4px;" ' +
                 'onclick="openAdminReassign(\'' + _esc(orgId) + '\',\'' + _esc(t.tenant) + '\',' + JSON.stringify(members) + ')">Transfer</button>' +
@@ -2656,7 +2656,7 @@ async function openOrgDetail(orgId) {
     document.getElementById('odm-title').textContent = org.name || 'Organization Details';
     document.getElementById('odm-body').innerHTML =
       billingSummary +
-      '<div style="margin-bottom:20px;border:1px solid var(--border);background:rgba(0,0,0,0.25);">' +
+      '<div style="margin-bottom:20px;border:1px solid var(--border);background:var(--bg3);border-radius:var(--radius-sm);overflow:hidden;">' +
         '<div class="data-pair" style="padding:10px 16px;"><span class="dp-lbl">OWNER:</span><span class="dp-val">' + _esc(org.owner_email||'—') + '</span></div>' +
         '<div class="data-pair" style="padding:10px 16px;"><span class="dp-lbl">BILLING:</span><span class="dp-val">' + _esc(org.billing_email||'—') + '</span></div>' +
         '<div class="data-pair" style="padding:10px 16px;border-bottom:none;"><span class="dp-lbl">CREATED:</span><span class="dp-val" style="color:var(--muted);">' + _esc((org.created_at||'').toString().slice(0,10)) + '</span></div>' +
@@ -2668,11 +2668,11 @@ async function openOrgDetail(orgId) {
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
           '<div style="font-size:9px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Members (' + members.length + ')</div>' +
           '<div style="display:flex;gap:4px;">' +
-            '<input type="email" id="adm-org-add-email" autocomplete="off" placeholder="user@example.com" style="font-size:11px;background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:4px 8px;width:160px;outline:none;" role="presentation">' +
+            '<input type="email" id="adm-org-add-email" autocomplete="off" placeholder="user@example.com" style="font-size:11px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-xs);padding:4px 8px;width:160px;outline:none;" role="presentation">' +
             '<button class="btn btn-xs btn-primary" onclick="adminAddOrgMember(\''+orgId+'\')">+ Add</button>' +
           '</div>' +
         '</div>' +
-        '<div style="border:1px solid var(--border);">' + membersHtml + '</div>' +
+        '<div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">' + membersHtml + '</div>' +
       '</div>' +
 
       // Instance Management UI
@@ -2680,11 +2680,11 @@ async function openOrgDetail(orgId) {
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
           '<div style="font-size:9px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Instances (' + tenants.length + ')</div>' +
           '<div style="display:flex;gap:4px;">' +
-            '<input type="text" id="adm-org-add-tenant" autocomplete="off" placeholder="tenant-name" style="font-size:11px;background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:4px 8px;width:120px;outline:none;">' +
+            '<input type="text" id="adm-org-add-tenant" autocomplete="off" placeholder="tenant-name" style="font-size:11px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-xs);padding:4px 8px;width:120px;outline:none;">' +
             '<button class="btn btn-xs btn-primary" onclick="adminLinkOrgInstance(\''+orgId+'\')">+ Link</button>' +
           '</div>' +
         '</div>' +
-        '<div style="border:1px solid var(--border);">' + tenantsHtml + '</div>' +
+        '<div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">' + tenantsHtml + '</div>' +
       '</div>' +
 
       '<div class="modal-btns" style="border-top:1px solid var(--border);padding-top:20px;margin-top:20px;">' +
