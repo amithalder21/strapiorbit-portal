@@ -5,7 +5,7 @@
   <div class="logo">
     <div class="logo-mark">SO</div>
     Strapi Orbit
-    <span style="font-size:10px;color:var(--accent2);font-family:'DM Mono',monospace;border:1px solid rgba(16,185,129,0.2);padding:1px 7px;letter-spacing:1px;background:rgba(16,185,129,0.04);">ADMIN</span>
+    <span style="font-size:10px;color:var(--accent2);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;border:1px solid rgba(16,185,129,0.2);padding:1px 7px;letter-spacing:1px;background:rgba(16,185,129,0.04);">ADMIN</span>
   </div>
   <div class="nav-right">
     <button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">
@@ -272,7 +272,7 @@
             <div class="panel-sub" id="tenant-count">Loading...</div>
           </div>
           <div class="panel-header-right">
-            <div id="upgrade-log-badge" style="display:none;font-size:11px;font-family:'DM Mono',monospace;padding:3px 12px;border-radius:100px;background:rgba(91,108,242,0.12);color:var(--accent);">upgrading...</div>
+            <div id="upgrade-log-badge" style="display:none;font-size:11px;font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;padding:3px 12px;border-radius:var(--radius-relaxed);background:rgba(83,58,253,0.08);border:1px solid rgba(83,58,253,0.2);color:var(--accent);">upgrading...</div>
             <button class="btn btn-ghost btn-sm" id="btn-heatmap-toggle" onclick="toggleHeatmap()" title="Toggle heatmap view">
               <i data-lucide="layout-grid" style="width:12px;height:12px;"></i>
               Heatmap
@@ -301,7 +301,7 @@
             <option value="EU">EU</option>
             <option value="ASIA">Asia</option>
           </select>
-          <span id="instances-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+          <span id="instances-filter-count" style="font-size:11px;color:var(--faint);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-left:auto;"></span>
         </div>
         <!-- Heatmap view (hidden by default) -->
         <div id="heatmap-view" style="display:none;" class="heatmap-grid"></div>
@@ -352,9 +352,9 @@
       <!-- Build log drawer -->
       <div id="build-log-drawer" class="log-panel" style="display:none;">
         <div class="log-head">
-          <span>deployment log — <span id="build-log-tenant" style="color:var(--accent);font-family:'DM Mono',monospace;"></span></span>
+          <span>deployment log — <span id="build-log-tenant" style="color:var(--accent);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;"></span></span>
           <div style="display:flex;align-items:center;gap:10px;">
-            <span id="build-log-status" style="font-size:11px;padding:2px 10px;border-radius:100px;background:rgba(91,108,242,0.12);color:var(--accent);"></span>
+            <span id="build-log-status" style="font-size:11px;padding:2px 10px;border-radius:var(--radius-relaxed);background:rgba(83,58,253,0.08);border:1px solid rgba(83,58,253,0.2);color:var(--accent);"></span>
             <button onclick="document.getElementById('build-log-drawer').style.display='none'" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:0;" title="Close">×</button>
           </div>
         </div>
@@ -365,7 +365,7 @@
       <!-- Container log panel -->
       <div id="container-log-panel" class="log-panel" style="display:none;">
         <div class="log-head">
-          <span>container logs — <span id="container-log-tenant" style="color:var(--accent);font-family:'DM Mono',monospace;"></span></span>
+          <span>container logs — <span id="container-log-tenant" style="color:var(--accent);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;"></span></span>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <select class="pkg-select" id="log-tail-sel" style="padding:3px 8px;font-size:11px;">
               <option value="50">50 lines</option>
@@ -386,7 +386,7 @@
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
               Refresh
             </button>
-            <span id="log-drawer-count" style="font-size:10px;color:var(--faint);font-family:'DM Mono',monospace;"></span>
+            <span id="log-drawer-count" style="font-size:10px;color:var(--faint);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;"></span>
             <button onclick="closeLogDrawer()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:0 2px;" title="Close">×</button>
           </div>
         </div>
@@ -451,7 +451,7 @@
             <option value="admin">Admin</option>
             <option value="user">User</option>
           </select>
-          <span id="users-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+          <span id="users-filter-count" style="font-size:11px;color:var(--faint);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-left:auto;"></span>
         </div>
         <div style="overflow-x:auto;">
           <table class="data-table u-table" style="min-width:680px;">
@@ -497,7 +497,7 @@
             <option value="sent">Sent</option>
             <option value="failed">Failed</option>
           </select>
-          <span id="notif-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+          <span id="notif-filter-count" style="font-size:11px;color:var(--faint);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-left:auto;"></span>
         </div>
         <div style="overflow-x:auto;">
           <table class="data-table" style="min-width:660px;">
@@ -557,7 +557,7 @@
             <option value="done">Completed</option>
             <option value="error">Failed</option>
           </select>
-          <span id="jobs-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+          <span id="jobs-filter-count" style="font-size:11px;color:var(--faint);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-left:auto;"></span>
         </div>
         <div style="overflow-x:auto;">
           <table class="data-table" style="min-width:660px;">
@@ -610,7 +610,7 @@
             <option value="past_due">Past due</option>
             <option value="cancelled">Cancelled</option>
           </select>
-          <span id="subs-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+          <span id="subs-filter-count" style="font-size:11px;color:var(--faint);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-left:auto;"></span>
         </div>
         <div style="overflow-x:auto;">
           <table class="data-table" style="min-width:640px;">
@@ -699,7 +699,7 @@
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" id="inv-tenant-filter" placeholder="Filter by tenant…" onkeydown="if(event.key==='Enter')loadInvoices()">
           </div>
-          <span id="inv-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+          <span id="inv-filter-count" style="font-size:11px;color:var(--faint);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-left:auto;"></span>
         </div>
         <!-- Create invoice form -->
         <div class="inv-create-form">
@@ -868,7 +868,7 @@
           <div style="border-top:1px solid var(--border);padding-top:14px;">
             <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">Restore from backup</div>
             <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">
-              Upload a <code style="font-family:'DM Mono',monospace;background:var(--bg3);padding:1px 5px;border-radius:3px;">.zip</code> file downloaded from this panel.
+              Upload a <code style="font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;background:var(--bg3);padding:1px 5px;border-radius:3px;">.zip</code> file downloaded from this panel.
               The DB restore runs inside a single transaction — if anything fails the DB is rolled back automatically. Asset files are always restored.
             </div>
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -908,7 +908,7 @@
           </div>
         </div>
         <div id="email-preview-wrap" style="padding:16px 20px;display:none;">
-          <div id="email-preview-subject" style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;"></div>
+          <div id="email-preview-subject" style="font-size:12px;color:var(--muted);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-bottom:10px;"></div>
           <iframe id="email-preview-frame" class="preview-frame" sandbox="allow-same-origin"></iframe>
         </div>
       </div>
@@ -976,7 +976,7 @@
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" id="sessions-search" placeholder="Search email or IP…" oninput="filterSessions()">
           </div>
-          <span id="sessions-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+          <span id="sessions-filter-count" style="font-size:11px;color:var(--faint);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-left:auto;"></span>
         </div>
         <div style="overflow-x:auto;">
           <table class="data-table" style="min-width:620px;">
@@ -1086,7 +1086,7 @@
     <div class="modal-close" onclick="closeAdminDeleteOrg()">×</div>
     <div class="modal-title" style="color:var(--red);">Delete Organization</div>
     <div class="modal-sub">This action is <strong>irreversible</strong>. Instances will become ownerless. Type the org slug to confirm:</div>
-    <div style="background:color-mix(in srgb,var(--red) 8%,var(--bg));border:1px solid color-mix(in srgb,var(--red) 30%,transparent);border-radius:6px;padding:8px 12px;margin:14px 0 6px;font-family:'DM Mono',monospace;font-size:13px;color:var(--red);letter-spacing:0.5px;" id="ado-slug-label"></div>
+    <div style="background:color-mix(in srgb,var(--red) 8%,var(--bg));border:1px solid color-mix(in srgb,var(--red) 30%,transparent);border-radius:6px;padding:8px 12px;margin:14px 0 6px;font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;font-size:13px;color:var(--red);letter-spacing:0.5px;" id="ado-slug-label"></div>
     <input type="hidden" id="ado-org-id">
     <input class="env-input" type="text" id="ado-confirm-input" placeholder="type slug to confirm" autocomplete="off" style="width:100%;margin-top:10px;color:var(--text);"
       oninput="document.getElementById('ado-err').textContent=''"
@@ -1198,7 +1198,7 @@
     <div id="cg-result" style="margin-bottom:12px;"></div>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeConnectGit()">Cancel</button>
-      <button class="modal-confirm" style="background:var(--accent2); color:#000;" onclick="confirmConnectGit()">Save configuration</button>
+      <button class="modal-confirm" style="background:var(--accent2); color:#fff;" onclick="confirmConnectGit()">Save configuration</button>
     </div>
   </div>
 </div>
@@ -1213,7 +1213,7 @@
     <div id="rp-err" style="font-size:12px;color:var(--red);min-height:16px;margin-bottom:8px;"></div>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeResetPass()">Cancel</button>
-      <button class="modal-confirm" style="background:var(--accent2); color:#000;" onclick="confirmResetPass()">Update Password</button>
+      <button class="modal-confirm" style="background:var(--accent2); color:#fff;" onclick="confirmResetPass()">Update Password</button>
     </div>
   </div>
 </div>
@@ -1251,13 +1251,13 @@
       </div>
       <div>
         <div class="field-label">Message Payload</div>
-        <textarea class="modal-input" id="bc-body" rows="6" placeholder="Announcement text…" style="margin-bottom:0;resize:vertical;font-family:'DM Mono',monospace;height:auto;padding-top:12px;"></textarea>
+        <textarea class="modal-input" id="bc-body" rows="6" placeholder="Announcement text…" style="margin-bottom:0;resize:vertical;font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;height:auto;padding-top:12px;"></textarea>
       </div>
     </div>
     <div id="bc-result" style="font-size:12px;min-height:16px;margin-bottom:10px;"></div>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeBroadcast()">Cancel</button>
-      <button class="modal-confirm" style="background:var(--accent2); color:#000;" onclick="confirmBroadcast()">Dispatch Blast</button>
+      <button class="modal-confirm" style="background:var(--accent2); color:#fff;" onclick="confirmBroadcast()">Send Broadcast</button>
     </div>
   </div>
 </div>
@@ -1273,7 +1273,7 @@
     <div id="extend-err" style="font-size:12px;color:var(--red);min-height:16px;margin-bottom:8px;"></div>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeExtend()">Cancel</button>
-      <button class="modal-confirm" style="background:var(--accent2); color:#000;" onclick="confirmExtend()">Execute Extension</button>
+      <button class="modal-confirm" style="background:var(--accent2); color:#fff;" onclick="confirmExtend()">Execute Extension</button>
     </div>
   </div>
 </div>
@@ -1287,7 +1287,7 @@
         <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="drawer-360-sub"></div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button class="btn btn-xs" style="background:var(--card2);color:var(--fg);border:1px solid var(--border);" onclick="openTransferTenantOwner(document.getElementById('drawer-360-title').textContent)" title="Transfer this tenant to a different user">Transfer Owner</button>
+        <button class="btn btn-ghost btn-xs" onclick="openTransferTenantOwner(document.getElementById('drawer-360-title').textContent)" title="Transfer this tenant to a different user">Transfer Owner</button>
         <button class="drawer-close" onclick="closeTenant360()">×</button>
       </div>
     </div>
@@ -1304,7 +1304,7 @@
       <div class="modal-title">Transfer Tenant Owner</div>
       <button onclick="closeTransferTenantOwner()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:24px;line-height:1;">×</button>
     </div>
-    <div class="modal-sub">Move <strong id="tto-tenant-name" style="color:var(--fg);"></strong> to a different user's account. All subscriptions, invoices, and jobs will be reassigned to the new owner's organization.</div>
+    <div class="modal-sub">Move <strong id="tto-tenant-name" style="color:var(--text);"></strong> to a different user's account. All subscriptions, invoices, and jobs will be reassigned to the new owner's organization.</div>
     <input type="hidden" id="tto-tenant">
     <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px;">
       <div>
@@ -1334,7 +1334,7 @@
       <button onclick="closeGrantPerm()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:24px;line-height:1;">×</button>
     </div>
     <div class="modal-sub" style="margin-bottom:20px;">
-      Assign <strong id="gp-email-label" style="color:var(--text);font-weight:600;font-family:'DM Mono',monospace;"></strong> to an organisation with a specific role — no DB access required.
+      Assign <strong id="gp-email-label" style="color:var(--text);font-weight:600;font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;"></strong> to an organisation with a specific role — no DB access required.
     </div>
     <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;">
       <div>
@@ -1354,13 +1354,13 @@
         </select>
       </div>
       <div style="background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.18);border-radius:var(--radius-sm);padding:10px 14px;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:6px;">Role capabilities</div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-bottom:6px;">Role capabilities</div>
         <div id="gp-role-hint" style="font-size:11px;color:var(--muted);line-height:1.6;"></div>
       </div>
     </div>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeGrantPerm()">Cancel</button>
-      <button id="gp-confirm-btn" onclick="confirmGrantPerm()" style="background:var(--accent);border:none;color:#fff;padding:8px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.15s;">
+      <button id="gp-confirm-btn" onclick="confirmGrantPerm()" class="modal-confirm" style="background:var(--accent);">
         Grant Access
       </button>
     </div>

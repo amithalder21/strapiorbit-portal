@@ -192,7 +192,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
 .field-input::placeholder { color:var(--faint); }
 .btn-unlock {
   width:100%; height:42px; background:var(--btn-primary); border:none;
-  border-radius:var(--radius-sharp); color:var(--btn-text); font-size:13px; font-weight:600;
+  border-radius:var(--radius-sharp); color:var(--btn-text); font-size:13px; font-weight:500;
   cursor:pointer; font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace; transition:opacity 0.15s;
   text-transform:uppercase; letter-spacing:1px;
 }
@@ -219,7 +219,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
 .sidebar-section-label {
   font-size:10px;
   font-family:'Inter',sans-serif;
-  font-weight:600;
+  font-weight:500;
   letter-spacing:1.5px;
   text-transform:uppercase;
   color:var(--faint);
@@ -248,7 +248,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
 .s-nav-btn.active {
   color:var(--accent);
   background:rgba(83,58,253,0.06);
-  font-weight:600;
+  font-weight:500;
 }
 .s-nav-btn svg { flex-shrink:0; width:15px; height:15px; }
 .s-nav-btn.active svg { color:var(--accent); }
@@ -263,7 +263,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
   min-width:18px;
   text-align:center;
   display:none;
-  font-weight:600;
+  font-weight:500;
 }
 .s-nav-badge.show { display:block; }
 .sidebar-footer {
@@ -319,7 +319,8 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
 .stat-label { font-size:11px; color:var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:1px; }
 
 .icon-pact {
-  background: transparent; border: 1px solid var(--border); width: 28px; height: 28px;
+  background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sharp);
+  width: 28px; height: 28px;
   display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted);
   transition: all 0.15s;
 }
@@ -382,7 +383,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
 .btn:disabled { opacity:0.4; cursor:not-allowed; transform:none !important; }
 
 .btn-primary {
-  background:var(--accent); color:#fff; font-weight:600; border-color:var(--accent);
+  background:var(--accent); color:#fff; font-weight:500; border-color:var(--accent);
 }
 .btn-primary:hover { opacity:0.88; }
 
@@ -403,7 +404,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
 .btn-ghost { background:transparent; border:1px solid transparent; color:var(--muted); }
 .btn-ghost:hover { color:var(--text); background:var(--bg-lifted); border-color:var(--border); }
 
-.btn-success { background:var(--green); color:#000; border-color:var(--green); font-weight:600; }
+.btn-success { background:var(--green); color:#fff; border-color:var(--green); font-weight:500; }
 .btn-danger { 
   background:rgba(239,68,68,0.03); 
   border:1px solid rgba(239,68,68,0.25); 
@@ -447,7 +448,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
 .data-pair:last-child { border-bottom: none; }
 .dp-lbl {
   font-family: 'Source Code Pro', 'SFMono-Regular', 'DM Mono', monospace; font-size: 10px; color: var(--faint);
-  text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.2px; font-weight: 500;
   min-width: 100px; padding-right: 12px;
 }
 .dp-val {
@@ -460,18 +461,21 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
 .dp-val a:hover { border-bottom-color: var(--accent2); }
 
 .copy-btn-mini {
-  background: transparent; border: 1px solid var(--border); color: var(--faint);
-  font-size: 9px; padding: 2px 6px; cursor: pointer; text-transform: uppercase;
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 24px; padding: 0 10px;
+  background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-btn);
+  color: var(--faint); font-size: 10px; font-family: 'Source Code Pro','SFMono-Regular','DM Mono',monospace;
+  text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.copy-btn-mini:hover { color: var(--text); border-color: var(--muted); }
-/* copy-btn-mini brackets removed per DESIGN.md */
+.copy-btn-mini:hover { color: var(--text); border-color: var(--border2); background: var(--bg-lifted); }
 
 /* ── Tables ── */
 .data-table { width:100%; border-collapse:collapse; }
 .data-table th {
   font-size:10px;
   font-family:'Inter',sans-serif;
-  font-weight:600;
+  font-weight:500;
   letter-spacing:0.5px;
   text-transform:uppercase;
   white-space:nowrap;
@@ -657,7 +661,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
 .modal-cancel:hover { color:var(--text); border-color:var(--text); }
 .modal-confirm {
   background:var(--red); border:none; color:#fff; padding:8px 18px;
-  border-radius:var(--radius-sm); font-size:13px; font-weight:600; cursor:pointer;
+  border-radius:var(--radius-sm); font-size:13px; font-weight:500; cursor:pointer;
   font-family:'Inter',sans-serif; transition:opacity 0.15s;
 }
 .modal-confirm:hover { opacity:0.85; }
@@ -986,7 +990,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
   border:1px solid var(--border);
   padding:12px 14px;
 }
-.cluster-stat-val { font-size:22px; font-weight:600; font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace; line-height:1; color:var(--text); }
+.cluster-stat-val { font-size:22px; font-weight:500; font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace; line-height:1; color:var(--text); }
 .cluster-stat-lbl { font-size:11px; color:var(--faint); margin-top:4px; font-family:'Inter',sans-serif; }
 
 /* ── Drawer upgraded ── */
@@ -1032,7 +1036,7 @@ html[data-theme="light"] .tog-thumb { transform:translateX(13px); background:#ff
   border-bottom:1px solid var(--border);
   font-size:10px;
   font-family:'Inter',sans-serif;
-  font-weight:600;
+  font-weight:500;
   letter-spacing:1px;
   text-transform:uppercase;
   color:var(--faint);
@@ -1193,7 +1197,7 @@ html[data-theme="light"] .s-nav-btn:hover {
 html[data-theme="light"] .s-nav-btn.active {
   color: var(--accent);
   background: rgba(139,92,246,0.09);
-  font-weight: 600;
+  font-weight: 500;
 }
 html[data-theme="light"] .s-nav-btn.active svg { color: var(--accent); }
 
