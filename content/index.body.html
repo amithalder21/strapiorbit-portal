@@ -1,0 +1,691 @@
+
+  <div class="hero-bg">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
+
+  <nav>
+    <div class="logo">
+      <div class="logo-mark">SO</div>
+      Strapi Orbit
+    </div>
+    <ul class="nav-links">
+      <li><a href="#why">Features</a></li>
+      <li><a href="#specs">Specs</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#start">Deploy</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="/dashboard.html" class="btn-nav">Dashboard</a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="hero-pill"><span class="pill-dot"></span>Fully Managed Strapi Infrastructure · Public Beta</div>
+    <h1>Enterprise Strapi.<br><em>Zero Overhead.</em></h1>
+    <p class="hero-sub">Production-ready Strapi instances, live in under 3 minutes.</p>
+    <div class="hero-btns">
+      <button id="hero-deploy-btn" class="btn-primary">Deploy Your First Instance</button>
+      <button id="hero-how-btn" class="btn-outline">See How It Works</button>
+    </div>
+
+    <!-- Product as Hero: terminal mock -->
+    <div class="hero-product-mock">
+      <div class="hpm-bar">
+        <div class="vdot vdot-r"></div>
+        <div class="vdot vdot-y"></div>
+        <div class="vdot vdot-g"></div>
+        <span class="hpm-title">Strapi Orbit — Deploy Engine</span>
+        <span class="hpm-indicator"></span>
+      </div>
+      <div class="hpm-body">
+        <div class="hpm-line"><span class="hpm-prompt">$</span><span class="hpm-cmd"> strapi-orbit deploy --plan pro --domain cms.acme.com</span></div>
+        <div class="hpm-line hpm-ok">✓  Isolated runtime environment ready     <span class="hpm-tag">done</span></div>
+        <div class="hpm-line hpm-ok">✓  PostgreSQL 15 cluster ready            <span class="hpm-tag">ready</span></div>
+        <div class="hpm-line hpm-ok">✓  SSL certificate issued via cert-manager <span class="hpm-tag">issued</span></div>
+        <div class="hpm-line hpm-ok">✓  Strapi v5 image deployed               <span class="hpm-tag">deployed</span></div>
+        <div class="hpm-line hpm-ok">✓  Domain cms.acme.com verified & active  <span class="hpm-tag">live</span></div>
+        <div class="hpm-line hpm-result">›  Instance is live. Total deploy time: 2m 41s <span class="hpm-cursor"></span></div>
+      </div>
+      <div class="hpm-footer">
+        <span class="hpm-status-dot"></span>
+        <span>All systems operational</span>
+        <span style="margin-left:auto;">Avg. deploy: <strong>2m 41s</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Stats bar ── -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num" id="stat-deploy">&lt;3<span style="font-size:20px;font-weight:200"> min</span></div>
+      <div class="stat-label">Time to production</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num"><span class="count-up" data-target="99.9" data-decimals="1">0</span><span style="font-size:22px;font-weight:200">%</span></div>
+      <div class="stat-label">Uptime SLA</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num"><span class="count-up" data-target="100" data-decimals="0">0</span><span style="font-size:22px;font-weight:200">%</span></div>
+      <div class="stat-label">Tenant isolation</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num"><span class="count-up" data-target="3" data-decimals="0">0</span></div>
+      <div class="stat-label">Availability regions</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Feature Showcase — Bento Grid ── -->
+  <section id="why" class="section-fade">
+    <div class="sec-header">
+      <span class="sec-tag">Why Strapi Orbit</span>
+      <h2>Built for teams that<br>need it to just work.</h2>
+      <p class="sec-sub">Purpose-built managed Strapi hosting. Enterprise infrastructure, zero operations overhead.</p>
+    </div>
+
+    <div class="bento-grid">
+
+      <!-- Card 1: Large — Infrastructure (spans 2 cols) -->
+      <div class="bento-card">
+        <div class="bento-eyebrow">Infrastructure</div>
+        <div class="bento-title">Total isolation by design.</div>
+        <div class="bento-desc">Every instance runs inside its own fully isolated runtime environment. Dedicated compute, isolated networking, automated SSL — applied automatically, every deployment, without exception.</div>
+        <div class="bento-metrics">
+          <div class="bento-metric">
+            <span class="bento-metric-num">100%</span>
+            <span class="bento-metric-label">Isolated tenants</span>
+          </div>
+          <div class="bento-metric">
+            <span class="bento-metric-num">0</span>
+            <span class="bento-metric-label">Shared resources</span>
+          </div>
+          <div class="bento-metric">
+            <span class="bento-metric-num">VPC</span>
+            <span class="bento-metric-label">Per instance</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Small top right — Delivery -->
+      <div class="bento-card">
+        <div class="bento-eyebrow">Delivery</div>
+        <div class="bento-title">Live in under 3 minutes.</div>
+        <div class="bento-desc">Push to deploy with automated CI/CD. Databases, SSL, and monitoring provisioned instantly.</div>
+        <div class="bento-stat">
+          <span class="bento-stat-num">&lt;3<span class="bento-stat-unit">min</span></span>
+        </div>
+      </div>
+
+      <!-- Card 3: Small bottom left — Observability -->
+      <div class="bento-card">
+        <div class="bento-eyebrow">Observability</div>
+        <div class="bento-title">Deep platform intelligence.</div>
+        <div class="bento-desc">Elastic auto-scaling, built-in health telemetry, and real-time performance metrics. Full visibility into every layer of your stack.</div>
+      </div>
+
+      <!-- Card 4: Large bottom right — Reliability (spans 2 cols) -->
+      <div class="bento-card">
+        <div class="bento-eyebrow">Reliability</div>
+        <div class="bento-title">99.9% uptime. Backed by infrastructure, not promises.</div>
+        <div class="bento-desc">Redundant clusters across multiple availability regions with automated failover. Our SLA is contractual — downtime costs us, which means we're motivated to prevent it.</div>
+        <div class="bento-metrics">
+          <div class="bento-metric">
+            <span class="bento-metric-num">99.9%</span>
+            <span class="bento-metric-label">Uptime SLA</span>
+          </div>
+          <div class="bento-metric">
+            <span class="bento-metric-num">3</span>
+            <span class="bento-metric-label">Availability regions</span>
+          </div>
+          <div class="bento-metric">
+            <span class="bento-metric-num">Auto</span>
+            <span class="bento-metric-label">Failover</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="how" class="charcoal section-fade">
+    <span class="sec-tag">How It Works</span>
+    <h2>Three steps.<br>Production-ready.</h2>
+    <p class="sec-sub">Launch without complexity. Everything is configured and ready to use. You handle the content — we handle the infrastructure.</p>
+    <div class="how-grid">
+      <div class="how-steps">
+        <div class="how-step active" data-step="0">
+          <div class="step-circle">01</div>
+          <div class="step-body">
+            <div class="step-title">Provide details</div>
+            <div class="step-desc">Choose your name, domain, and plan. Connect your Git repository for automatic updates on every push.</div>
+          </div>
+        </div>
+        <div class="how-step" data-step="1">
+          <div class="step-circle">02</div>
+          <div class="step-body">
+            <div class="step-title">Automated setup</div>
+            <div class="step-desc">Databases, SSL, and monitoring are provisioned automatically. Your instance is live in under 3 minutes.</div>
+          </div>
+        </div>
+        <div class="how-step" data-step="2">
+          <div class="step-circle">03</div>
+          <div class="step-body">
+            <div class="step-title">Publish and scale</div>
+            <div class="step-desc">Create content immediately. Your repository updates deploy automatically. Scale anytime with zero downtime.</div>
+          </div>
+        </div>
+      </div>
+      <div class="how-visual">
+        <div class="visual-bar">
+          <div class="vdot vdot-r"></div>
+          <div class="vdot vdot-y"></div>
+          <div class="vdot vdot-g"></div>
+          <div style="margin-left:12px;font-size:10px;font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;color:rgba(255,255,255,0.72);letter-spacing:1px;">
+            DASHBOARD / SHELL</div>
+        </div>
+        <div class="visual-content" id="visual-content">
+          <div><span class="vc-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── Technical Specs ── -->
+  <section id="specs" class="charcoal section-fade">
+    <span class="sec-tag">Technical Specifications</span>
+    <h2>Every layer.<br>Every detail.</h2>
+    <p class="sec-sub">Precision-engineered infrastructure. Know exactly what powers your Strapi instance.</p>
+
+    <div class="specs-grid">
+
+      <div class="specs-group">
+        <div class="specs-group-title">Infrastructure Layer</div>
+        <div class="specs-row">
+          <span class="spec-key">Orchestration</span>
+          <span class="spec-val spec-val-accent">Proprietary runtime orchestration</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Isolation</span>
+          <span class="spec-val">Dedicated isolated environment per tenant</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Networking</span>
+          <span class="spec-val">Isolated private network per instance</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Scaling</span>
+          <span class="spec-val spec-val-accent">Elastic — CPU &amp; Memory</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Availability regions</span>
+          <span class="spec-val">USA, EUROPE, ASIA</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Uptime SLA</span>
+          <span class="spec-val spec-val-accent">99.9% guaranteed (enterprise plan)</span>
+        </div>
+      </div>
+
+      <div class="specs-group">
+        <div class="specs-group-title">Application Layer</div>
+        <div class="specs-row">
+          <span class="spec-key">CMS Platform</span>
+          <span class="spec-val spec-val-accent">Strapi v5 (LTS)</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Runtime</span>
+          <span class="spec-val">Node.js 18 / 20 / 22</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Database</span>
+          <span class="spec-val spec-val-accent">MySql 8</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">File storage</span>
+          <span class="spec-val">Persistent Storage</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">SSL/TLS</span>
+          <span class="spec-val">Automated SSL</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Custom domains</span>
+          <span class="spec-val spec-val-accent">DNS based domain verification</span>
+        </div>
+      </div>
+
+      <div class="specs-group">
+        <div class="specs-group-title">DevOps &amp; Delivery</div>
+        <div class="specs-row">
+          <span class="spec-key">Deployment model</span>
+          <span class="spec-val">Git push → auto-deploy</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Supported providers</span>
+          <span class="spec-val spec-val-accent">GitHub, GitLab</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Deploy time</span>
+          <span class="spec-val spec-val-accent">&lt; 3 minutes avg.</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Rollback</span>
+          <span class="spec-val">One-click via dashboard</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Env variables</span>
+          <span class="spec-val">Encrypted at rest</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Backups</span>
+          <span class="spec-val">Daily automated snapshots</span>
+        </div>
+      </div>
+
+      <div class="specs-group">
+        <div class="specs-group-title">Security &amp; Compliance</div>
+        <div class="specs-row">
+          <span class="spec-key">Network policy</span>
+          <span class="spec-val spec-val-accent">Zero-trust by default</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Secrets management</span>
+          <span class="spec-val">Encrypted secrets store (at rest)</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Auth model</span>
+          <span class="spec-val">Token-based auth + secure credential hashing</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">RBAC</span>
+          <span class="spec-val spec-val-accent">Owner / Admin / Viewer</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Audit logging</span>
+          <span class="spec-val">SOC2-aligned access logs</span>
+        </div>
+        <div class="specs-row">
+          <span class="spec-key">Data residency</span>
+          <span class="spec-val spec-val-muted">Multi Region DR (enterprise plan)</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="pricing" class="section-fade">
+    <span class="sec-tag">Pricing</span>
+    <h2>Simple, transparent<br>pricing.</h2>
+    <p class="sec-sub">All plans include a 28-day free trial. No credit card required to start. Upgrade anytime.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-top-spacer"></div>
+        <div class="plan-tier">Starter</div>
+        <div class="plan-price"><sup>$</sup>29</div>
+        <div class="plan-billing">per month</div>
+        <hr class="plan-hr">
+        <ul class="plan-feat">
+          <li><span class="check">✓</span>One Strapi instance</li>
+          <li><span class="check">✓</span>Basic storage &amp; bandwidth</li>
+          <li><span class="check">✓</span>Custom domain with SSL</li>
+          <li><span class="check">✓</span>Regular Platform Updates</li>
+          <li><span class="check">✓</span>Community support</li>
+          <li><span class="check">✓</span>Ideal for small projects</li>
+        </ul>
+        <button class="plan-cta" data-plan="starter">Get started</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pop-badge">Most popular</div>
+        <div class="plan-top-spacer"></div>
+        <div class="plan-tier">Pro</div>
+        <div class="plan-price"><sup>$</sup>79</div>
+        <div class="plan-billing">per instance · monthly</div>
+        <hr class="plan-hr">
+        <ul class="plan-feat">
+          <li><span class="check">✓</span>Everything in Starter</li>
+          <li><span class="check">✓</span>10x more storage capacity</li>
+          <li><span class="check">✓</span>GitHub &amp; GitLab integration</li>
+          <li><span class="check">✓</span>Advanced monitoring</li>
+          <li><span class="check">✓</span>99.5% uptime guarantee</li>
+          <li><span class="check">✓</span>Priority email support</li>
+        </ul>
+        <button class="plan-cta featured-cta" data-plan="pro">Get started</button>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-top-spacer"></div>
+        <div class="plan-tier">Enterprise</div>
+        <div class="plan-price"><sup>$</sup>199</div>
+        <div class="plan-billing">per instance · monthly</div>
+        <hr class="plan-hr">
+        <ul class="plan-feat">
+          <li><span class="check">✓</span>Everything in Pro</li>
+          <li><span class="check">✓</span>Unlimited storage &amp; traffic</li>
+          <li><span class="check">✓</span>Dedicated infrastructure</li>
+          <li><span class="check">✓</span>99.9% uptime SLA</li>
+          <li><span class="check">✓</span>Custom integrations</li>
+          <li><span class="check">✓</span>24/7 phone support</li>
+        </ul>
+        <button class="plan-cta" data-plan="enterprise">Get started</button>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="start" class="section-fade">
+    <span class="sec-tag">Deploy Now</span>
+    <h2>Your platform,<br>live in 3 minutes.</h2>
+    <p class="sec-sub">Everything is ready to go. Complete the form below and your Strapi instance will be live on your domain within 3 minutes.</p>
+    <div class="demo-section">
+      <div class="form-panel">
+        <div class="form-header">
+          <div class="form-title">Create your Strapi instance</div>
+        </div>
+        <div class="form-body" data-form-type="other">
+          <div class="form-progress">
+            <div class="progress-step active" id="prog-1"><span class="prog-dot"></span>Account</div>
+            <div class="progress-step" id="prog-2"><span class="prog-dot"></span>Instance</div>
+            <div class="progress-step" id="prog-3"><span class="prog-dot"></span>Deploy</div>
+          </div>
+
+          <!-- Step 1: Account -->
+          <div id="step-1" class="form-step">
+            <div class="field">
+              <label>Name</label>
+              <input type="text" placeholder="Alex Reed" id="name" autocomplete="name" required>
+              <div class="field-error" id="err-name"></div>
+            </div>
+            <div class="field">
+              <label>Phone number</label>
+              <input type="tel" placeholder="+1 (555) 000-0000" id="phone" autocomplete="tel" required>
+              <div class="field-error" id="err-phone"></div>
+            </div>
+            <div class="field">
+              <label>Email address</label>
+              <input type="email" placeholder="alex@company.com" id="email" autocomplete="email" required>
+              <div class="field-error" id="err-email"></div>
+            </div>
+            <div class="field">
+              <label style="display:flex;align-items:center;gap:8px;">
+                Organization domain
+                <span style="font-size:10px;color:var(--faint);font-weight:400;letter-spacing:0;text-transform:none;">auto-detected from your email</span>
+              </label>
+              <input type="text" id="company" placeholder="detected from email…"
+                readonly tabindex="-1"
+                style="background:var(--bg-lifted);color:var(--muted);cursor:default;">
+              <div class="field-error" id="err-company"></div>
+            </div>
+            <button class="submit-btn" id="next-step-1">CONTINUE</button>
+          </div>
+
+          <!-- Step 2: Instance -->
+          <div id="step-2" class="form-step" style="display:none;">
+            <div class="field">
+              <label style="display:flex;align-items:center;justify-content:space-between;">
+                <span>Instance name <span style="color:var(--faint);font-weight:400;letter-spacing:0;">(your unique
+                    identifier)</span></span>
+                <button type="button" id="regen-btn" class="regen-btn" title="Generate a new name">Regenerate</button>
+              </label>
+              <input type="text" placeholder="velvet-blade-74" id="iname" autocomplete="off">
+              <div style="font-size:12px;color:var(--muted);margin-top:6px;font-weight:300;">Lowercase letters, numbers,
+                and hyphens only. This becomes your subdomain.</div>
+              <div class="field-error" id="err-tenant"></div>
+            </div>
+            <div class="field">
+              <label>Custom domain <span
+                  style="color:var(--faint);font-weight:400;letter-spacing:0;">optional</span></label>
+              <input type="text" placeholder="cms.mycompany.com" id="domain" autocomplete="off">
+              <div style="font-size:12px;color:var(--muted);margin-top:6px;font-weight:300;">Leave empty to use your
+                instance name as subdomain.</div>
+              <div class="field-error" id="err-domain"></div>
+            </div>
+            <div class="field">
+              <label>Plan</label>
+              <div class="plan-selector" id="plan-selector">
+                <div class="plan-opt selected" data-plan="starter">
+                  <span class="plan-opt-name">Starter</span>
+                  <span class="plan-opt-price">Free</span>
+                </div>
+                <div class="plan-opt" data-plan="pro">
+                  <span class="plan-opt-name">Pro</span>
+                  <span class="plan-opt-price">$79/mo</span>
+                </div>
+                <div class="plan-opt" data-plan="enterprise">
+                  <span class="plan-opt-name">Enterprise</span>
+                  <span class="plan-opt-price">$199/mo</span>
+                </div>
+              </div>
+            </div>
+            <div class="field-row" style="margin-top:24px;">
+              <button class="btn-outline" style="width:100%;padding:13px;" id="prev-step-2">Back</button>
+              <button class="submit-btn" style="margin-top:0;" id="next-step-2">Continue to deployment</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Deploy -->
+          <div id="step-3" class="form-step" style="display:none;">
+            <div class="field">
+              <label>Region</label>
+              <div class="plan-selector" id="region-selector">
+                <div style="font-size:12px;color:var(--muted);padding:8px 0;">Loading regions…</div>
+              </div>
+              <div class="field-error" id="err-region"></div>
+            </div>
+            <div class="field">
+              <label>Git repo <span style="color:var(--faint);font-weight:400;letter-spacing:0;">optional — auto-deploy
+                  on push</span></label>
+              <input type="text" placeholder="https://github.com/acme/their-cms" id="igit" autocomplete="off">
+            </div>
+            <div class="field" id="git-branch-field" style="display:none;">
+              <label>Branch</label>
+              <input type="text" placeholder="main" id="igit-branch" value="main" autocomplete="off">
+            </div>
+            <div class="field" id="git-basedir-field" style="display:none;">
+              <label>Base directory <span style="color:var(--faint);font-weight:400;letter-spacing:0;">optional — for
+                  monorepos</span></label>
+              <input type="text" placeholder="apps/cms" id="igit-basedir" autocomplete="off">
+            </div>
+            <div class="field" id="git-node-field" style="display:none;">
+              <label>Node version</label>
+              <select id="igit-node">
+                <option value="22">Node 22 (LTS — recommended)</option>
+                <option value="20">Node 20 (LTS)</option>
+                <option value="18">Node 18 (LTS)</option>
+              </select>
+            </div>
+            <div class="field-row" style="margin-top:24px;">
+              <button class="btn-outline" style="width:100%;padding:13px;" id="prev-step-3">Back</button>
+              <button class="submit-btn" style="margin-top:0;" id="submit-btn">Deploy instance</button>
+            </div>
+          </div>
+          <div class="field-error" id="err-general" style="text-align:center;margin-top:10px;"></div>
+          <div class="form-footer"
+            style="text-align:center; margin-top:24px; font-size:12px; color:var(--muted); font-weight:300;">
+            By continuing, you agree to our <a href="/tos.html" id="tos-link-footer"
+              style="color:var(--accent); text-decoration:none; border-bottom:1px solid var(--border);">Terms
+              of service</a>
+          </div>
+
+          <div id="log-drawer" class="log-box">
+            <div class="log-head">
+              <span>deployment engine</span>
+              <span id="log-status-badge"
+                style="font-size:11px;padding:2px 10px;border-radius:4px;background:rgba(83,58,253,0.08);color:var(--accent);">running</span>
+            </div>
+            <div id="log-body" class="log-body"></div>
+          </div>
+
+          <!-- Onboarding context banner: new org vs joining workspace -->
+          <div id="provision-context-banner" style="display:none;margin-bottom:10px;padding:10px 14px;border-radius:6px;background:rgba(52,199,89,0.07);border:1px solid rgba(52,199,89,0.2);font-size:12px;color:var(--text);"></div>
+
+          <!-- Temp URL: shown immediately after payment while DNS is pending -->
+          <div id="temp-url-banner" style="display:none;margin-bottom:10px;padding:10px 14px;border-radius:6px;background:rgba(255,180,0,0.07);border:1px solid rgba(255,180,0,0.2);font-size:12px;">
+            <span style="color:var(--amber);font-weight:600;">&#9675; Your instance is deploying.</span>
+            You can access it at <a id="temp-url-link" href="#" target="_blank" rel="noopener" style="color:var(--accent2);font-family:'DM Mono',monospace;"></a> while DNS verification is pending.
+          </div>
+
+          <div class="success-card" id="success-card">
+            <div class="success-card-header">Instance is live</div>
+            <div class="success-card-body">
+              <div id="sc-portal-section"
+                style="display:none;margin-bottom:12px;padding:12px;background:rgba(52,199,89,0.06);border:1px solid rgba(52,199,89,0.2);border-radius:8px;font-size:12px;line-height:1.8;">
+                <div style="color:var(--green);font-weight:500;margin-bottom:4px;">Portal login</div>
+                <div class="cred-row" style="margin:0;">
+                  <span class="cred-label">Email</span>
+                  <span class="cred-val" id="sc-portal-email"
+                    style="font-family:'DM Mono',monospace;font-size:11px;"></span>
+                </div>
+                <div class="cred-row" id="sc-portal-pass-row" style="margin:4px 0 0;">
+                  <span class="cred-label">Password</span>
+                  <span class="cred-val" style="display:flex;align-items:center;gap:4px;">
+                    <span id="sc-portal-pass" style="font-family:'DM Mono',monospace;font-size:11px;"></span>
+                    <button class="copy-btn" id="sc-copy-pass">copy</button>
+                  </span>
+                </div>
+                <div id="sc-portal-pass-note" style="display:none;margin-top:4px;font-size:11px;color:var(--amber);">You
+                  already have a portal account — sign in with your existing password.</div>
+                <div id="sc-portal-new-note" style="margin-top:4px;font-size:11px;color:var(--amber);"></div>
+              </div>
+              <div
+                style="padding:12px;background:var(--bg3);border-radius:8px;font-size:12px;color:var(--muted);line-height:1.7;">
+                Add a DNS CNAME record:<br>
+                <span style="font-family:'DM Mono',monospace;color:var(--text);" id="sc-cname"></span>
+              </div>
+              <!-- DNS TXT verification instructions shown when org is unverified -->
+              <div id="sc-dns-section" style="display:none;margin-top:10px;padding:12px;background:rgba(255,180,0,0.06);border:1px solid rgba(255,180,0,0.25);border-radius:8px;font-size:12px;line-height:1.7;">
+                <div style="color:var(--amber);font-weight:600;margin-bottom:6px;">&#128274; Verify domain ownership</div>
+                <div style="color:var(--muted);margin-bottom:8px;">Add this TXT record to your DNS zone, then click Verify in your portal dashboard.</div>
+                <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);padding:8px;background:var(--bg);border-radius:4px;word-break:break-all;" id="sc-dns-token"></div>
+              </div>
+              <div style="margin-top:10px;font-size:12px;color:var(--muted);">All other details are available in your <a
+                  href="/dashboard.html" style="color:var(--accent);">Dashboard</a>.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-panel">
+        <div class="preview-card">
+          <div class="preview-card-header">
+            <span>Active customers</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="live-dot"></div>
+              <span id="live-instance-count" style="color:var(--green);font-size:11px;">loading...</span>
+            </div>
+          </div>
+          <div class="preview-card-body" id="live-tenant-list">
+            <div
+              style="text-align:center;padding:24px;color:var(--muted);font-size:13px;font-family:'DM Mono',monospace;">
+              unavailable</div>
+          </div>
+          <div class="provision-time">
+            <div class="pt-num" id="avg-deploy-display">—</div>
+            <div class="pt-label">avg. launch time</div>
+          </div>
+        </div>
+        <div class="preview-card" id="instance-preview-card">
+          <div class="preview-card-header">
+            <span>Instance preview</span>
+            <span class="badge b-s" id="prev-badge">STARTER</span>
+          </div>
+          <div class="preview-card-body">
+            <div class="tenant-item">
+              <div>
+                <div class="tenant-nm" id="prev-name" style="color:var(--text);">hidden-spark-13</div>
+                <div class="tenant-dm" id="prev-domain">hidden-spark-13.justbots.tech</div>
+              </div>
+              <div class="tenant-status">
+                <div class="sdot"></div><span>ready</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="preview-card">
+          <div class="preview-card-header"><span>What's included</span></div>
+          <div class="preview-card-body" style="font-size:13px;color:var(--muted);line-height:1.9;font-weight:300;">
+            <div
+              style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);">
+              <span>Strapi admin panel</span><span style="color:var(--green)">✓</span>
+            </div>
+            <div
+              style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);">
+              <span>Database &amp; file storage</span><span style="color:var(--green)">✓</span>
+            </div>
+            <div
+              style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);">
+              <span>SSL certificate</span><span style="color:var(--green)">✓</span>
+            </div>
+            <div
+              style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);">
+              <span>Performance monitoring</span><span style="color:var(--green)">✓</span>
+            </div>
+            <div
+              style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);">
+              <span>Daily backups</span><span style="color:var(--green)">✓</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0;" id="hpa-row">
+              <span>Auto-scaling</span><span style="color:var(--faint)">·</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">
+      <div class="logo-mark">SO</div>
+      Strapi Orbit <span
+        style="font-size:10px;color:var(--muted);opacity:0.6;font-family:'DM Mono',monospace;margin-left:4px;">v1.0.0</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#why">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="/privacy.html">Privacy</a></li>
+      <li><a href="/tos.html">Terms</a></li>
+      <li><a href="https://admin-beta.strapiorbit.cloud" style="color:var(--accent2);">Admin Console</a></li>
+    </ul>
+    <span class="footer-copy">© 2026 Nosia Technologies</span>
+  </footer>
+
+  <!-- Payment modal -->
+  <div class="modal-overlay" id="payment-modal">
+    <div class="modal-box" style="max-width:400px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <div class="modal-title" style="margin-bottom:0;">Complete your subscription</div>
+        <button id="close-payment-modal"
+          style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:0;">×</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">
+        <span id="pay-plan-label" style="color:var(--accent);font-weight:500;"></span> · billed monthly · test mode
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:500;letter-spacing:0.3px;margin-bottom:8px;">CARD
+          DETAILS</div>
+        <div id="stripe-card-element"
+          style="background:var(--bg-lifted);border:1px solid var(--border);border-radius:4px;padding:12px 14px;min-height:44px;">
+        </div>
+      </div>
+      <div id="pay-err" style="font-size:12px;color:var(--red);min-height:16px;margin-bottom:10px;"></div>
+      <button id="pay-btn"
+        style="width:100%;background:var(--btn-primary);color:var(--btn-text);border:none;border-radius:4px;padding:14px;font-size:14px;font-weight:400;cursor:pointer;font-family:'sohne-var','Inter','SF Pro Display',sans-serif;font-feature-settings:'ss01' 1;letter-spacing:normal;transition:opacity 0.15s;">
+        Subscribe — <span id="pay-price-label"></span>/mo
+      </button>
+      <div style="margin-top:12px;text-align:center;font-size:11px;color:var(--faint);">Test mode · use card <strong
+          style="color:var(--muted);">4242 4242 4242 4242</strong></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Coming soon</div>
+
+  

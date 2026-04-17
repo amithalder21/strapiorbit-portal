@@ -1,0 +1,294 @@
+
+  <div class="hero-bg">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
+
+  <nav>
+    <a href="/" style="text-decoration:none;color:inherit;">
+      <div class="logo">
+        <div class="logo-mark">SO</div>
+        Strapi Orbit
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/#why">Features</a></li>
+      <li><a href="/#specs">Specs</a></li>
+      <li><a href="/#pricing">Pricing</a></li>
+      <li><a href="/#start">Deploy</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="/" class="btn-nav">← Home</a>
+    </div>
+  </nav>
+
+  <section id="manage" class="charcoal" style="min-height:calc(100vh - 120px);">
+    <span class="sec-tag">Control panel</span>
+    <h2>Manage your instances</h2>
+    <p class="sec-sub">View all your CMS instances in one place. Update plans, configure deployments, and monitor your
+      content platform.</p>
+
+    <!-- Portal login -->
+    <div id="portal-login" style="margin-bottom:20px;">
+      <div id="invite-notice" style="display:none;background:rgba(83,58,253,0.05);border:1px solid rgba(83,58,253,0.2);padding:12px 14px;border-radius:4px;margin-bottom:16px;font-size:12px;color:var(--text);">
+        <span style="color:var(--accent);font-weight:600;">&#128233; Invitation Received.</span>
+        Sign in or create an account to join your team's workspace.
+      </div>
+
+      <div id="login-fields">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input type="email" id="portal-email" placeholder="your@email.com"
+            style="flex:1;min-width:180px;padding:12px 14px;border-radius:4px;border:1px solid var(--border);background:var(--bg-surface);color:var(--text);font-size:13px;font-family:'DM Mono',monospace;height:42px;box-sizing:border-box;">
+          <div class="pw-wrap" style="flex:1;min-width:180px;height:42px;">
+            <input type="password" id="portal-pass" placeholder="Portal password"
+              style="width:100%;padding:12px 14px;background:var(--bg-surface);border-radius:4px;border:1px solid var(--border);color:var(--text);font-size:13px;font-family:'DM Mono',monospace;height:100%;box-sizing:border-box;">
+            <button type="button" class="pw-toggle" id="portal-pw-toggle" tabindex="-1"><svg
+                xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg></button>
+          </div>
+          <button id="portal-login-btn"
+            style="height:42px;padding:0 32px;border-radius:4px;background:var(--accent);color:#fff;border:none;font-size:14px;font-family:'sohne-var','Inter','SF Pro Display',sans-serif;cursor:pointer;white-space:nowrap;font-weight:400;letter-spacing:normal;font-feature-settings:'ss01' 1;">Sign in</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+          <span id="portal-err" style="font-size:12px;color:var(--red);"></span>
+          <div style="display:flex;gap:16px;">
+            <button id="forgot-pass-btn"
+              style="background:transparent;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;font-family:'DM Mono',monospace;">Forgot
+              password?</button>
+            <button id="show-signup-btn"
+              style="background:transparent;border:none;color:var(--accent2);font-size:12px;cursor:pointer;padding:0;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;">Create account</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="signup-fields" style="display:none;">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <input type="text" id="portal-reg-name" placeholder="Full Name"
+              style="flex:1;min-width:180px;padding:12px 14px;border-radius:4px;border:1px solid var(--border);background:var(--bg-surface);color:var(--text);font-size:13px;font-family:'DM Mono',monospace;height:42px;box-sizing:border-box;">
+            <input type="email" id="portal-reg-email" placeholder="Email Address"
+              style="flex:1;min-width:180px;padding:12px 14px;border-radius:4px;border:1px solid var(--border);background:var(--bg-surface);color:var(--text);font-size:13px;font-family:'DM Mono',monospace;height:42px;box-sizing:border-box;">
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div class="pw-wrap" style="flex:1;min-width:180px;height:42px;">
+              <input type="password" id="portal-reg-pass" placeholder="Choose password (min 8 chars)"
+                style="width:100%;padding:12px 14px;background:var(--bg-surface);border-radius:4px;border:1px solid var(--border);color:var(--text);font-size:13px;font-family:'DM Mono',monospace;height:100%;box-sizing:border-box;">
+                <button type="button" class="pw-toggle" data-target="portal-reg-pass" tabindex="-1"><svg
+                  xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg></button>
+            </div>
+            <div style="flex:1;min-width:180px;position:relative;" title="Auto-detected from your email. Personal emails (gmail, etc.) create a private workspace instead.">
+              <input type="text" id="portal-reg-org" placeholder="auto-detected from email"
+                readonly tabindex="-1"
+                style="width:100%;padding:12px 14px;border-radius:4px;border:1px solid var(--border);background:var(--bg-lifted);color:var(--muted);font-size:13px;font-family:'DM Mono',monospace;height:42px;box-sizing:border-box;cursor:default;">
+              <span style="position:absolute;top:50%;right:10px;transform:translateY(-50%);font-size:10px;color:var(--faint);pointer-events:none;letter-spacing:0.5px;text-transform:uppercase;">Domain</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+            <span id="portal-reg-err" style="font-size:12px;color:var(--red);"></span>
+            <div style="display:flex;gap:16px;align-items:center;">
+              <button id="show-login-btn"
+                style="background:transparent;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;font-family:'DM Mono',monospace;">Back to sign in</button>
+              <button id="portal-reg-btn"
+                style="height:42px;padding:0 32px;border-radius:4px;background:var(--accent2);color:#fff;border:none;font-size:14px;font-family:'sohne-var','Inter','SF Pro Display',sans-serif;cursor:pointer;white-space:nowrap;font-weight:400;letter-spacing:normal;font-feature-settings:'ss01' 1;">Create account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User portal (post-login) -->
+    <div id="user-portal" style="display:none;margin-bottom:28px;">
+      <div class="portal-topbar">
+        <div class="portal-user-info">
+          Signed in as <strong id="portal-user-email"></strong>
+          &nbsp;·&nbsp;
+          <span id="user-tenant-count" style="color:var(--muted);">Loading...</span>
+        </div>
+        <div id="org-switcher" style="display:none;align-items:center;gap:6px;"></div>
+        <div class="portal-topbar-actions">
+          <button class="mac-dot-btn grn" id="refresh-tenants-btn" title="Refresh"></button>
+          <button class="mac-dot-btn yel" id="change-pass-btn" title="Change password"></button>
+          <button class="mac-dot-btn red" id="portal-logout-btn" title="Sign out"></button>
+        </div>
+      </div>
+      <div id="user-tenant-list"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">
+      <div class="logo-mark">SO</div>
+      Strapi Orbit <span
+        style="font-size:10px;color:var(--muted);opacity:0.6;font-family:'DM Mono',monospace;margin-left:4px;">v1.0.0</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="/#why">Features</a></li>
+      <li><a href="/#pricing">Pricing</a></li>
+      <li><a href="/privacy.html">Privacy</a></li>
+      <li><a href="/tos.html">Terms</a></li>
+      <li><a href="https://admin-beta.strapiorbit.cloud" style="color:var(--accent2);">Admin Console</a></li>
+    </ul>
+    <span class="footer-copy">© 2026 Nosia Technologies</span>
+  </footer>
+
+  <!-- Forgot password modal -->
+  <div class="modal-overlay" id="forgot-modal">
+    <div class="modal-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="modal-title">Reset password</div>
+        <button id="close-forgot-modal"
+          style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:24px;line-height:1;transition:color 0.2s;">×</button>
+      </div>
+      <div class="modal-sub">Enter your account email and we'll send a reset link (expires in 30 minutes).</div>
+      <div class="modal-field">
+        <label>Email Address</label>
+        <input type="email" id="forgot-email" class="modal-input" placeholder="your@email.com">
+      </div>
+      <div id="forgot-msg" style="font-size:12px;min-height:16px;margin-bottom:12px;font-family:'DM Mono',monospace;">
+      </div>
+      <div class="modal-actions">
+        <button id="forgot-submit-btn" class="modal-confirm" style="width:100%;">Send reset link</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset password modal -->
+  <div class="modal-overlay" id="reset-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="modal-title">Set new password</div>
+        <button onclick="document.getElementById('reset-modal').classList.remove('open')"
+          style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:24px;line-height:1;transition:color 0.2s;">×</button>
+      </div>
+      <div class="modal-sub">Choose a new password for your account. Minimum 8 characters.</div>
+      <div class="modal-field">
+        <label>New Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="reset-pass1" class="modal-input" placeholder="Enter new password">
+          <button type="button" class="pw-toggle" data-target="reset-pass1" tabindex="-1"><svg
+              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg></button>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>Confirm Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="reset-pass2" class="modal-input" placeholder="Repeat new password">
+          <button type="button" class="pw-toggle" data-target="reset-pass2" tabindex="-1"><svg
+              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg></button>
+        </div>
+      </div>
+      <div id="reset-msg" style="font-size:12px;min-height:16px;margin-bottom:12px;font-family:'DM Mono',monospace;">
+      </div>
+      <div class="modal-actions">
+        <button id="reset-submit-btn" class="modal-confirm" style="width:100%;">Set password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Renew modal -->
+  <div class="modal-overlay" id="renew-modal">
+    <div class="modal-box" style="max-width:400px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <div class="modal-title" style="margin-bottom:0;">Renew subscription</div>
+        <button id="close-renew-modal"
+          style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:0;">×</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">
+        <span id="renew-tenant-label"
+          style="color:var(--accent);font-weight:500;font-family:'DM Mono',monospace;"></span>
+        &nbsp;·&nbsp; <span id="renew-plan-label" style="color:var(--text);"></span> &nbsp;·&nbsp; 30 days &nbsp;·&nbsp;
+        test mode
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:500;letter-spacing:0.3px;margin-bottom:8px;">CARD
+          DETAILS</div>
+        <div id="renew-card-element"
+          style="background:var(--bg-lifted);border:1px solid var(--border);border-radius:4px;padding:12px 14px;min-height:44px;">
+        </div>
+      </div>
+      <div id="renew-err" style="font-size:12px;color:var(--red);min-height:16px;margin-bottom:10px;"></div>
+      <button id="renew-btn"
+        style="width:100%;background:var(--btn-primary);color:var(--btn-text);border:none;border-radius:4px;padding:14px;font-size:14px;font-weight:400;cursor:pointer;font-family:'sohne-var','Inter','SF Pro Display',sans-serif;font-feature-settings:'ss01' 1;letter-spacing:normal;transition:opacity 0.15s;">
+        Renew — <span id="renew-price-label"></span>/mo
+      </button>
+      <div style="margin-top:12px;text-align:center;font-size:11px;color:var(--faint);">Test mode · use card <strong
+          style="color:var(--muted);">4242 4242 4242 4242</strong></div>
+    </div>
+  </div>
+
+  <!-- Change password modal -->
+  <div class="modal-overlay" id="change-pass-modal">
+    <div class="modal-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="modal-title">Change password</div>
+        <button id="close-change-pass"
+          style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:24px;line-height:1;transition:color 0.2s;">×</button>
+      </div>
+      <div class="modal-sub">Enter your current password, then choose a new one.</div>
+      <div class="modal-form-grid">
+        <div class="modal-field">
+          <label>Current password</label>
+          <div class="pw-wrap">
+            <input class="modal-input" type="password" id="cp-current" placeholder="Current password">
+            <button type="button" class="pw-toggle" data-target="cp-current" tabindex="-1"><svg
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg></button>
+          </div>
+        </div>
+        <div class="modal-field">
+          <label>New password</label>
+          <div class="pw-wrap">
+            <input class="modal-input" type="password" id="cp-new" placeholder="New password (min 8 chars)">
+            <button type="button" class="pw-toggle" data-target="cp-new" tabindex="-1"><svg
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg></button>
+          </div>
+        </div>
+        <div class="modal-field">
+          <label>Confirm new password</label>
+          <div class="pw-wrap">
+            <input class="modal-input" type="password" id="cp-confirm" placeholder="Confirm new password">
+            <button type="button" class="pw-toggle" data-target="cp-confirm" tabindex="-1"><svg
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg></button>
+          </div>
+          <div id="cp-match"
+            style="font-size:11px;margin-top:6px;min-height:14px;font-family:'DM Mono',monospace;opacity: 0.8;"></div>
+        </div>
+      </div>
+      <div id="cp-err"
+        style="font-size:12px;color:var(--red);min-height:16px;margin:12px 0;font-family:'DM Mono',monospace;"></div>
+      <div class="modal-actions">
+        <button class="modal-confirm" id="cp-btn" style="width:100%;">Update password</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  

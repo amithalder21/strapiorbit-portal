@@ -1,0 +1,1375 @@
+
+
+<!-- Top nav -->
+<nav>
+  <div class="logo">
+    <div class="logo-mark">SO</div>
+    Strapi Orbit
+    <span style="font-size:10px;color:var(--accent2);font-family:'DM Mono',monospace;border:1px solid rgba(16,185,129,0.2);padding:1px 7px;letter-spacing:1px;background:rgba(16,185,129,0.04);">ADMIN</span>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">
+      <div class="tog-track"><div class="tog-thumb"></div></div>
+      <span id="tog-label">Light</span>
+    </button>
+    <a href="https://beta.strapiorbit.cloud" class="btn-nav" id="portal-nav-link">Portal</a>
+  </div>
+</nav>
+
+<!-- Unlock screen -->
+<div class="unlock-screen" id="unlock-screen">
+  <div class="unlock-card">
+    <div class="unlock-logo">
+      <div class="unlock-logo-mark">SO</div>
+      <div>
+        <div class="unlock-title">Strapi Orbit</div>
+        <div class="unlock-sub">Administrative Console</div>
+      </div>
+    </div>
+    <div class="unlock-form">
+      <div>
+        <div class="field-label">Email</div>
+        <input class="field-input" type="email" id="admin-email"
+          placeholder="admin@example.com" autocomplete="username"
+          onkeydown="if(event.key==='Enter')document.getElementById('admin-pass').focus()">
+      </div>
+      <div>
+        <div class="field-label">Password</div>
+        <input class="field-input" type="password" id="admin-pass"
+          placeholder="Admin password" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')unlockAdmin()">
+      </div>
+      <button class="btn-unlock" onclick="unlockAdmin()">Unlock Admin Panel</button>
+      <div class="unlock-err" id="unlock-err"></div>
+    </div>
+  </div>
+</div>
+
+<!-- App shell (hidden until unlocked) -->
+<div class="app-shell" id="app-shell" style="display:none;">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label">Manage</div>
+    <button class="s-nav-btn" id="nav-overview" onclick="showSection('overview')">
+      <i data-lucide="layout-grid" style="width:15px;height:15px;opacity:0.6;"></i>
+      Overview
+    </button>
+    <button class="s-nav-btn active" id="nav-instances" onclick="showSection('instances')">
+      <i data-lucide="server" style="width:15px;height:15px;opacity:0.6;"></i>
+      Instances
+      <span class="s-nav-badge" id="nb-instances"></span>
+    </button>
+    <button class="s-nav-btn" id="nav-clusters" onclick="showSection('clusters')">
+      <i data-lucide="map-pin" style="width:15px;height:15px;opacity:0.6;"></i>
+      Regions
+    </button>
+    <button class="s-nav-btn" id="nav-users" onclick="showSection('users')">
+      <i data-lucide="users" style="width:15px;height:15px;opacity:0.6;"></i>
+      Users
+      <span class="s-nav-badge" id="nb-users"></span>
+    </button>
+    <button class="s-nav-btn" id="nav-jobs" onclick="showSection('jobs')">
+      <i data-lucide="activity" style="width:15px;height:15px;opacity:0.6;"></i>
+      Jobs Queue
+      <span class="s-nav-badge" id="nb-jobs"></span>
+    </button>
+    <button class="s-nav-btn" id="nav-subscriptions" onclick="showSection('subscriptions')">
+      <i data-lucide="credit-card" style="width:15px;height:15px;opacity:0.6;"></i>
+      Subscriptions
+    </button>
+    <button class="s-nav-btn" id="nav-revenue" onclick="showSection('revenue')">
+      <i data-lucide="dollar-sign" style="width:15px;height:15px;opacity:0.6;"></i>
+      Revenue
+    </button>
+    <div class="sidebar-section-label">System</div>
+    <button class="s-nav-btn" id="nav-notifications" onclick="showSection('notifications')">
+      <i data-lucide="bell" style="width:15px;height:15px;opacity:0.6;"></i>
+      Notifications
+      <span class="s-nav-badge" id="nb-notifications"></span>
+    </button>
+    <button class="s-nav-btn" id="nav-auditlog" onclick="showSection('auditlog')">
+      <i data-lucide="file-text" style="width:15px;height:15px;opacity:0.6;"></i>
+      Audit Log
+    </button>
+    <button class="s-nav-btn" id="nav-ratelimits" onclick="showSection('ratelimits')">
+      <i data-lucide="shield" style="width:15px;height:15px;opacity:0.6;"></i>
+      Rate Limits
+    </button>
+    <button class="s-nav-btn" id="nav-sessions" onclick="showSection('sessions')">
+      <i data-lucide="user-x" style="width:15px;height:15px;opacity:0.6;"></i>
+      Sessions
+      <span class="s-nav-badge" id="nb-sessions"></span>
+    </button>
+    <button class="s-nav-btn" id="nav-organizations" onclick="showSection('organizations')">
+      <i data-lucide="building-2" style="width:15px;height:15px;opacity:0.6;"></i>
+      Organizations
+    </button>
+    <button class="s-nav-btn" id="nav-systemstatus" onclick="showSection('systemstatus')">
+      <i data-lucide="clock" style="width:15px;height:15px;opacity:0.6;"></i>
+      System Status
+    </button>
+    <div class="sidebar-footer">
+      <div class="logo-mark" style="width:24px;height:24px;font-size:9px;">SO</div>
+      Strapi Orbit <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto;">v1.0.0</span>
+    </div>
+  </aside>
+
+  <!-- Main content area -->
+  <main class="main-area">
+
+    <!-- Stats bar (shared across sections) -->
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="dot-grp">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+          </div>
+          <span class="stat-delta trend-flat" id="stat-instances-delta">—</span>
+        </div>
+        <div class="stat-value" id="stat-instances">—</div>
+        <div class="stat-label">Total instances</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="dot-grp">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+          </div>
+          <span class="stat-delta trend-flat" id="stat-users-delta">—</span>
+        </div>
+        <div class="stat-value" id="stat-users">—</div>
+        <div class="stat-label">Registered users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="dot-grp">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+          </div>
+          <span class="stat-delta trend-flat" id="stat-regions-delta">—</span>
+        </div>
+        <div class="stat-value" id="stat-clusters">—</div>
+        <div class="stat-label">Regions online</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div class="stat-icon amber">
+            <i data-lucide="bell" style="width:16px;height:16px;"></i>
+          </div>
+          <span class="stat-delta trend-flat" id="stat-emails-delta">—</span>
+        </div>
+        <div class="stat-value" id="stat-pending-emails">—</div>
+        <div class="stat-label">Pending emails</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Overview
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-overview">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-title">Overview</div>
+          <div class="section-sub">Fleet summary and recent activity</div>
+        </div>
+        <div class="section-head-right">
+          <button class="btn btn-ghost btn-sm" onclick="loadOverview()">
+            <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div class="ov-kpi-grid" id="ov-kpi-grid">
+        <div class="ov-kpi" onclick="showSection('instances')" style="cursor:pointer;">
+          <div class="ov-kpi-top">
+            <div class="stat-icon blue"><i data-lucide="server"></i></div>
+            <span class="ov-kpi-badge b-ok" id="ov-provisioning-badge" style="display:none;"></span>
+          </div>
+          <div class="ov-kpi-val" id="ov-active">—</div>
+          <div class="ov-kpi-lbl">Active instances</div>
+          <div class="ov-kpi-sub" id="ov-provisioning"></div>
+        </div>
+        <div class="ov-kpi" onclick="showSection('users')" style="cursor:pointer;">
+          <div class="ov-kpi-top">
+            <div class="stat-icon purple"><i data-lucide="users"></i></div>
+          </div>
+          <div class="ov-kpi-val" id="ov-users">—</div>
+          <div class="ov-kpi-lbl">Registered users</div>
+          <div class="ov-kpi-sub" id="ov-active-subs"></div>
+        </div>
+        <div class="ov-kpi" onclick="showSection('revenue')" style="cursor:pointer;">
+          <div class="ov-kpi-top">
+            <div class="stat-icon green"><i data-lucide="dollar-sign"></i></div>
+          </div>
+          <div class="ov-kpi-val" id="ov-mrr">—</div>
+          <div class="ov-kpi-lbl">Monthly Recurring Revenue</div>
+          <div class="ov-kpi-sub" id="ov-month-rev"></div>
+        </div>
+        <div class="ov-kpi" onclick="showSection('jobs')" style="cursor:pointer;">
+          <div class="ov-kpi-top">
+            <div class="stat-icon amber"><i data-lucide="activity"></i></div>
+            <span class="ov-kpi-badge b-failed" id="ov-job-errors-badge" style="display:none;"></span>
+          </div>
+          <div class="ov-kpi-val" id="ov-jobs">—</div>
+          <div class="ov-kpi-lbl">Active jobs</div>
+          <div class="ov-kpi-sub" id="ov-job-errors"></div>
+        </div>
+      </div>
+
+      <div class="ov-panels">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-header-left">
+              <div class="panel-title">Latest instances</div>
+              <div class="panel-sub">Most recently provisioned</div>
+            </div>
+            <div class="panel-header-right">
+              <button class="btn btn-ghost btn-sm" onclick="showSection('instances')" style="font-size:11px;">View all →</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" style="min-width:300px;">
+              <thead><tr><th>Tenant</th><th>Plan</th><th>Status</th><th>Age</th></tr></thead>
+              <tbody id="ov-recent-tbody"><tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted);">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-header-left">
+              <div class="panel-title">Recent activity</div>
+              <div class="panel-sub" id="ov-notifs-sub"></div>
+            </div>
+            <div class="panel-header-right">
+              <button class="btn btn-ghost btn-sm" onclick="showSection('auditlog')" style="font-size:11px;">Audit log →</button>
+            </div>
+          </div>
+          <div id="ov-activity-feed" style="max-height:320px;overflow-y:auto;">
+            <div style="text-align:center;padding:32px;color:var(--muted);font-size:13px;">Loading…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Instances
+    ═══════════════════════════════════════ -->
+    <div class="content-section active" id="section-instances">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="dot-grp">
+              <div class="dot dot-red"></div>
+              <div class="dot dot-yellow"></div>
+              <div class="dot dot-green"></div>
+            </div>
+            <div class="panel-title">Active Instances</div>
+            <div class="panel-sub" id="tenant-count">Loading...</div>
+          </div>
+          <div class="panel-header-right">
+            <div id="upgrade-log-badge" style="display:none;font-size:11px;font-family:'DM Mono',monospace;padding:3px 12px;border-radius:100px;background:rgba(91,108,242,0.12);color:var(--accent);">upgrading...</div>
+            <button class="btn btn-ghost btn-sm" id="btn-heatmap-toggle" onclick="toggleHeatmap()" title="Toggle heatmap view">
+              <i data-lucide="layout-grid" style="width:12px;height:12px;"></i>
+              Heatmap
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="loadTenants()">
+              <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <!-- Filter bar -->
+        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg3);">
+          <div class="search-bar" style="max-width:240px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="instance-search" placeholder="Search tenant, domain…" oninput="filterTenants()">
+          </div>
+          <select class="pkg-select" id="instance-plan-filter" style="padding:5px 10px;font-size:12px;" onchange="filterTenants()">
+            <option value="">All plans</option>
+            <option value="starter">Starter</option>
+            <option value="pro">Pro</option>
+            <option value="enterprise">Enterprise</option>
+          </select>
+          <select class="pkg-select" id="instance-region-filter" style="padding:5px 10px;font-size:12px;" onchange="filterTenants()">
+            <option value="">All regions</option>
+            <option value="US">US</option>
+            <option value="EU">EU</option>
+            <option value="ASIA">Asia</option>
+          </select>
+          <span id="instances-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+        </div>
+        <!-- Heatmap view (hidden by default) -->
+        <div id="heatmap-view" style="display:none;" class="heatmap-grid"></div>
+
+        <div id="table-view" style="overflow-x:auto;">
+          <table class="data-table t-table" style="min-width:780px;">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="bulk-check-all" onchange="toggleSelectAll(this)" title="Select all" style="cursor:pointer;accent-color:var(--accent);"></th>
+                <th>Tenant</th><th>Domain</th><th>Plan</th><th>Region</th>
+                <th>Health</th><th>Git / Deploy</th><th>Upgrade plan</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tenant-tbody">
+              <tr><td colspan="9" style="text-align:center;padding:40px;"><div class="empty-state-text" style="color:var(--muted);">Loading instances...</div></td></tr>
+            </tbody>
+          </table>
+        </div><!-- /table-view -->
+      </div>
+
+      <!-- Bulk action bar -->
+      <div class="bulk-bar" id="bulk-bar">
+        <span class="bulk-count" id="bulk-count-label">0 selected</span>
+        <button class="btn btn-ghost btn-sm" onclick="bulkEmail()">
+          <i data-lucide="mail" style="width:12px;height:12px;"></i>
+          Email
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="bulkUpgrade()">
+          <i data-lucide="arrow-up-circle" style="width:12px;height:12px;"></i>
+          Upgrade to Pro
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="bulkDelete()">
+          <i data-lucide="trash" style="width:12px;height:12px;"></i>
+          Remove
+        </button>
+        <button style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:0 8px;line-height:1;" onclick="clearBulkSelection()">×</button>
+      </div>
+
+      <!-- Upgrade/delete job log -->
+      <div id="upgrade-log-drawer" class="log-panel" style="display:none;">
+        <div class="log-head">
+          <span>job progress</span>
+          <span id="upgrade-status-txt" style="color:var(--accent);">running</span>
+        </div>
+        <div id="upgrade-log-body" class="log-body" style="max-height:180px;"></div>
+      </div>
+
+      <!-- Build log drawer -->
+      <div id="build-log-drawer" class="log-panel" style="display:none;">
+        <div class="log-head">
+          <span>deployment log — <span id="build-log-tenant" style="color:var(--accent);font-family:'DM Mono',monospace;"></span></span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span id="build-log-status" style="font-size:11px;padding:2px 10px;border-radius:100px;background:rgba(91,108,242,0.12);color:var(--accent);"></span>
+            <button onclick="document.getElementById('build-log-drawer').style.display='none'" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:0;" title="Close">×</button>
+          </div>
+        </div>
+        <div id="build-history-list" style="padding:8px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;"></div>
+        <div id="build-log-body" class="log-body" style="max-height:260px;"></div>
+      </div>
+
+      <!-- Container log panel -->
+      <div id="container-log-panel" class="log-panel" style="display:none;">
+        <div class="log-head">
+          <span>container logs — <span id="container-log-tenant" style="color:var(--accent);font-family:'DM Mono',monospace;"></span></span>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <select class="pkg-select" id="log-tail-sel" style="padding:3px 8px;font-size:11px;">
+              <option value="50">50 lines</option>
+              <option value="100" selected>100 lines</option>
+              <option value="200">200 lines</option>
+              <option value="500">500 lines</option>
+            </select>
+            <select class="pkg-select" id="log-since-sel" style="padding:3px 8px;font-size:11px;">
+              <option value="15m">Last 15 min</option>
+              <option value="30m">Last 30 min</option>
+              <option value="1h" selected>Last 1 hour</option>
+              <option value="3h">Last 3 hours</option>
+              <option value="6h">Last 6 hours</option>
+              <option value="12h">Last 12 hours</option>
+              <option value="24h">Last 24 hours</option>
+            </select>
+            <button class="btn btn-ghost btn-xs" onclick="refreshLogDrawer()">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+            <span id="log-drawer-count" style="font-size:10px;color:var(--faint);font-family:'DM Mono',monospace;"></span>
+            <button onclick="closeLogDrawer()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:0 2px;" title="Close">×</button>
+          </div>
+        </div>
+        <div id="container-log-body" class="log-body" style="max-height:300px;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Clusters
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-clusters">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-title">Deployment Regions</div>
+          <div class="section-sub">Live status and regional performance</div>
+        </div>
+        <div class="section-head-right">
+          <button class="btn btn-ghost btn-sm" onclick="loadClusters()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div class="cluster-grid" id="cluster-grid">
+        <div style="color:var(--muted);font-size:13px;padding:20px 0;">Loading regions...</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Users
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-users">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Users</div>
+            <div class="panel-sub" id="users-count">Loading...</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-accent btn-sm" onclick="openBroadcast()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.17 12a19.79 19.79 0 0 1-3-8.63A2 2 0 0 1 3.17 1.5h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6z"/></svg>
+              Broadcast
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="exportCSV('users')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="loadUsers()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <!-- Filter bar -->
+        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg3);">
+          <div class="search-bar" style="max-width:260px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="user-search" placeholder="Search email…" oninput="filterUsers()">
+          </div>
+          <select class="pkg-select" id="user-role-filter" style="padding:5px 10px;font-size:12px;" onchange="filterUsers()">
+            <option value="">All roles</option>
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+          </select>
+          <span id="users-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table u-table" style="min-width:680px;">
+            <thead>
+              <tr>
+                <th>Email</th><th>Role</th><th>Registered</th><th>Instances</th>
+                <th>Subscriptions</th><th>Last seen</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Loading users...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Notifications
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-notifications">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Notification Queue</div>
+            <div class="panel-sub" id="notif-sub">Email delivery status</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-ghost btn-sm" onclick="loadNotifications()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg3);">
+          <div class="search-bar" style="max-width:220px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="notif-email-search" placeholder="Filter by email…" oninput="filterNotifRows()">
+          </div>
+          <select id="notif-filter" class="pkg-select" style="padding:5px 10px;font-size:12px;" onchange="loadNotifications()">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="sent">Sent</option>
+            <option value="failed">Failed</option>
+          </select>
+          <span id="notif-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="min-width:660px;">
+            <thead>
+              <tr>
+                <th style="width:16%;">Type</th>
+                <th style="width:24%;">Email</th>
+                <th style="width:9%;text-align:center;">Status</th>
+                <th style="width:8%;text-align:center;">Attempts</th>
+                <th style="width:14%;">Created</th>
+                <th>Last error</th>
+                <th style="width:7%;text-align:center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="notif-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Click Refresh to load</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Jobs Queue
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-jobs">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Jobs Queue</div>
+            <div class="panel-sub" id="jobs-sub">All setup, upgrade, removal, and deployment tasks</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-ghost btn-sm" onclick="loadJobs()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <!-- Filter bar -->
+        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg3);">
+          <div class="search-bar" style="max-width:200px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="jobs-tenant-search" placeholder="Filter by tenant…" oninput="filterJobRows()">
+          </div>
+          <select class="pkg-select" id="jobs-type-filter" style="padding:5px 10px;font-size:12px;" onchange="loadJobs()">
+            <option value="">All types</option>
+            <option value="provision">Setup</option>
+            <option value="upgrade">Upgrade</option>
+            <option value="delete">Remove</option>
+            <option value="build">Deploy</option>
+          </select>
+          <select class="pkg-select" id="jobs-status-filter" style="padding:5px 10px;font-size:12px;" onchange="loadJobs()">
+            <option value="">All statuses</option>
+            <option value="queued">Scheduled</option>
+            <option value="running">In progress</option>
+            <option value="done">Completed</option>
+            <option value="error">Failed</option>
+          </select>
+          <span id="jobs-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="min-width:660px;">
+            <thead>
+              <tr>
+                <th style="width:9%;">Type</th>
+                <th style="width:11%;">Status</th>
+                <th style="width:16%;">Tenant</th>
+                <th style="width:14%;">Plan / Region</th>
+                <th style="width:22%;">Timing</th>
+                <th style="width:20%;">Result</th>
+                <th style="width:8%;text-align:center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="jobs-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Click Refresh to load</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Subscriptions
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-subscriptions">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Subscriptions</div>
+            <div class="panel-sub" id="subs-sub">All billing subscriptions</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-ghost btn-sm" onclick="loadSubscriptions()">
+              <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <!-- Filter bar -->
+        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg3);">
+          <div class="search-bar" style="max-width:240px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="subs-search" placeholder="Search tenant or email…" oninput="filterSubscriptions()">
+          </div>
+          <select class="pkg-select" id="subs-status-filter" style="padding:5px 10px;font-size:12px;" onchange="loadSubscriptions()">
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="trialing">Trialing</option>
+            <option value="past_due">Past due</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <span id="subs-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="min-width:640px;">
+            <thead>
+              <tr>
+                <th style="width:14%;">Tenant</th>
+                <th style="width:22%;">Email</th>
+                <th style="width:10%;">Plan</th>
+                <th style="width:10%;">Status</th>
+                <th style="width:20%;">Billing cycle</th>
+                <th style="width:14%;">Updated</th>
+                <th style="width:10%;text-align:center;">Extend</th>
+              </tr>
+            </thead>
+            <tbody id="subs-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Click Refresh to load</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Revenue
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-revenue">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-title">Revenue</div>
+          <div class="section-sub">MRR, plan breakdown and payment history</div>
+        </div>
+        <div class="section-head-right">
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV('payments')">
+            <i data-lucide="download" style="width:12px;height:12px;"></i>
+            Export CSV
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="loadRevenue()">
+            <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div class="revenue-grid" id="revenue-cards">
+        <div class="rev-card"><div class="rev-value" id="rev-mrr">—</div><div class="rev-label">Monthly Recurring Revenue</div><div class="rev-sub">active + trialing subs</div></div>
+        <div class="rev-card"><div class="rev-value" id="rev-month">—</div><div class="rev-label">Revenue this month</div><div class="rev-sub" id="rev-month-sub">payments · succeeded</div></div>
+        <div class="rev-card"><div class="rev-value" id="rev-total">—</div><div class="rev-label">All-time revenue</div><div class="rev-sub" id="rev-total-sub">total payments</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-header-left">
+              <div class="panel-title">Plan breakdown</div>
+              <div class="panel-sub">Active subscriptions by plan</div>
+            </div>
+          </div>
+          <div id="plan-breakdown" style="padding:18px 20px;"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-header-left">
+              <div class="panel-title">Monthly payments</div>
+              <div class="panel-sub">Last 6 months</div>
+            </div>
+          </div>
+          <div id="monthly-chart" style="padding:18px 20px 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Invoices panel -->
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Invoices</div>
+            <div class="panel-sub" id="inv-sub">All billing documents</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-ghost btn-sm" onclick="loadInvoices()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Load invoices
+            </button>
+          </div>
+        </div>
+        <!-- Filter bar -->
+        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg3);">
+          <div class="search-bar" style="max-width:220px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="inv-tenant-filter" placeholder="Filter by tenant…" onkeydown="if(event.key==='Enter')loadInvoices()">
+          </div>
+          <span id="inv-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+        </div>
+        <!-- Create invoice form -->
+        <div class="inv-create-form">
+          <div>
+            <label>Tenant</label>
+            <input type="text" id="inv-create-tenant" placeholder="tenant-name" style="width:160px;">
+          </div>
+          <div>
+            <label>Amount (cents)</label>
+            <input type="number" id="inv-create-amount" placeholder="2900" min="1" style="width:120px;">
+          </div>
+          <div>
+            <label>Plan label</label>
+            <input type="text" id="inv-create-plan" placeholder="manual" style="width:120px;">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="createInvoice()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Create invoice
+          </button>
+          <div id="inv-create-result" style="font-size:12px;min-height:16px;align-self:flex-end;padding-bottom:2px;"></div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="min-width:620px;">
+            <thead>
+              <tr>
+                <th style="width:14%;">Invoice #</th>
+                <th style="width:26%;">Tenant / Email</th>
+                <th style="width:9%;">Plan</th>
+                <th style="width:10%;">Amount</th>
+                <th style="width:9%;">Status</th>
+                <th style="width:14%;">Issued</th>
+                <th style="width:10%;text-align:center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="inv-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted);">Click Load invoices to fetch</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Audit Log
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-auditlog">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="dot-grp">
+              <div class="dot dot-red"></div>
+              <div class="dot dot-yellow"></div>
+              <div class="dot dot-green"></div>
+            </div>
+            <div class="panel-title">Audit Log</div>
+            <div class="panel-sub" id="audit-sub" style="margin-left:8px;text-transform:uppercase;font-size:10px;color:var(--faint);">Action Stream</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-ghost btn-sm" onclick="loadAuditLog()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Search
+            </button>
+          </div>
+        </div>
+        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg3);">
+          <div class="search-bar" style="max-width:180px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="audit-actor" placeholder="Actor…" onkeydown="if(event.key==='Enter')loadAuditLog()">
+          </div>
+          <div class="search-bar" style="max-width:180px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="audit-action" placeholder="Action prefix…" onkeydown="if(event.key==='Enter')loadAuditLog()">
+          </div>
+          <div class="search-bar" style="max-width:180px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="audit-target" placeholder="Target…" onkeydown="if(event.key==='Enter')loadAuditLog()">
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="min-width:700px;">
+            <thead>
+              <tr>
+                <th style="width:14%;">Time</th>
+                <th style="width:18%;">Actor</th>
+                <th style="width:16%;">Action</th>
+                <th style="width:16%;">Target</th>
+                <th style="width:10%;">IP</th>
+                <th>Meta</th>
+              </tr>
+            </thead>
+            <tbody id="audit-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted);">Click Search to load</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: System Status
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-systemstatus">
+      <div class="section-head">
+        <div class="section-head-left">
+          <div class="section-title">System Status</div>
+          <div class="section-sub">Service health and operational metrics</div>
+        </div>
+        <div class="section-head-right">
+          <button class="btn btn-ghost btn-sm" onclick="loadSystemStatus()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-header-left"><div class="panel-title">Background Workers</div></div></div>
+          <div id="sys-workers" style="padding:4px 20px;">
+            <div style="text-align:center;padding:32px;color:var(--muted);font-size:13px;">Click Refresh to load</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-header-left"><div class="panel-title">Queue Depths</div></div></div>
+          <div id="sys-queues" style="padding:4px 20px;">
+            <div style="text-align:center;padding:32px;color:var(--muted);font-size:13px;">Click Refresh to load</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px;">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Object Storage Sync</div>
+            <div class="panel-sub" id="storage-sync-sub">Backblaze B2 / S3 two-way asset sync</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-accent btn-sm" id="storage-sync-btn" onclick="triggerStorageSync()">
+              <i data-lucide="refresh-ccw" style="width:12px;height:12px;"></i> Sync Now
+            </button>
+          </div>
+        </div>
+        <div id="storage-sync-body" style="padding:4px 20px;">
+          <div style="text-align:center;padding:32px;color:var(--muted);font-size:13px;">Click Refresh to load</div>
+        </div>
+      </div>
+
+      <!-- Backup & Restore -->
+      <div class="panel" style="margin-top:14px;">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Backup &amp; Restore</div>
+            <div class="panel-sub">PostgreSQL dump + tenant asset files, bundled as a ZIP</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-accent btn-sm" id="backup-btn" onclick="downloadBackup()">
+              <i data-lucide="download" style="width:12px;height:12px;"></i> Download Backup
+            </button>
+          </div>
+        </div>
+        <div style="padding:16px 20px;display:flex;flex-direction:column;gap:14px;">
+          <!-- Backup status row -->
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span id="backup-status">No backup downloaded this session.</span>
+          </div>
+          <!-- Restore row -->
+          <div style="border-top:1px solid var(--border);padding-top:14px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">Restore from backup</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">
+              Upload a <code style="font-family:'DM Mono',monospace;background:var(--bg3);padding:1px 5px;border-radius:3px;">.zip</code> file downloaded from this panel.
+              The DB restore runs inside a single transaction — if anything fails the DB is rolled back automatically. Asset files are always restored.
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <input type="file" id="restore-file" accept=".zip"
+                style="font-size:12px;color:var(--text);background:var(--bg3);border:1px solid var(--border);
+                       border-radius:6px;padding:5px 10px;cursor:pointer;flex:1;min-width:0;">
+              <button class="btn btn-ghost btn-sm" id="restore-btn" onclick="restoreBackup()">
+                <i data-lucide="upload" style="width:12px;height:12px;"></i> Restore
+              </button>
+            </div>
+            <div id="restore-status" style="margin-top:10px;font-size:12px;display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:14px;">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Email Preview</div>
+            <div class="panel-sub">Render any email template with sample data</div>
+          </div>
+          <div class="panel-header-right">
+            <select class="pkg-select" id="preview-type" style="padding:5px 10px;font-size:12px;">
+              <option value="welcome">Welcome</option>
+              <option value="password_reset">Password Reset</option>
+              <option value="payment_confirmed">Payment Confirmed</option>
+              <option value="subscription_renewed">Subscription Renewed</option>
+              <option value="subs_expiring">Subscription Expiring</option>
+              <option value="subs_expired">Subscription Expired</option>
+              <option value="plan_upgraded">Plan Upgraded</option>
+              <option value="build_success">Deployment Succeeded</option>
+              <option value="build_failed">Deployment Failed</option>
+              <option value="instance_deleted">Instance Removed</option>
+              <option value="broadcast">Broadcast</option>
+            </select>
+            <button class="btn btn-accent btn-sm" onclick="previewEmail()">Preview</button>
+          </div>
+        </div>
+        <div id="email-preview-wrap" style="padding:16px 20px;display:none;">
+          <div id="email-preview-subject" style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;"></div>
+          <iframe id="email-preview-frame" class="preview-frame" sandbox="allow-same-origin"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Rate Limits
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-ratelimits">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Rate Limits</div>
+            <div class="panel-sub" id="rate-limits-sub">IPs with recent activity</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-ghost btn-sm" onclick="loadRateLimits()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="min-width:600px;">
+            <colgroup>
+              <col style="width:32%"><col style="width:10%"><col style="width:24%">
+              <col style="width:12%"><col style="width:12%">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>IP Address</th>
+                <th style="text-align:center;">Hits</th>
+                <th>Last Hit</th>
+                <th style="text-align:center;">Status</th>
+                <th style="text-align:center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="rate-limits-tbody">
+              <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--muted);">Click Refresh to load</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Sessions
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-sessions">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Active Sessions</div>
+            <div class="panel-sub" id="sessions-sub">All live authenticated sessions</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-ghost btn-sm" onclick="loadSessions()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg3);">
+          <div class="search-bar" style="max-width:260px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="sessions-search" placeholder="Search email or IP…" oninput="filterSessions()">
+          </div>
+          <span id="sessions-filter-count" style="font-size:11px;color:var(--faint);font-family:'DM Mono',monospace;margin-left:auto;"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="min-width:620px;">
+            <thead>
+              <tr>
+                <th style="width:24%;">Email</th>
+                <th style="width:8%;">Role</th>
+                <th style="width:22%;">Connection</th>
+                <th style="width:20%;">Device</th>
+                <th style="width:18%;">Session window</th>
+                <th style="width:8%;text-align:center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="sessions-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted);">Click Refresh to load</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION: Organizations
+    ═══════════════════════════════════════ -->
+    <div class="content-section" id="section-organizations">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-title">Organizations</div>
+            <div class="panel-sub" id="orgs-sub">All registered organizations</div>
+          </div>
+          <div class="panel-header-right">
+            <button class="btn btn-primary btn-sm" onclick="openAdminCreateOrg()">+ New Organization</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadOrganizations()" style="margin-left:6px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:var(--bg3);">
+          <div class="search-bar" style="max-width:280px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="orgs-search" placeholder="Search name, domain, or owner…" oninput="filterOrgs()">
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="min-width:780px;">
+            <thead>
+              <tr>
+                <th style="width:20%;">Name</th>
+                <th style="width:20%;">Root Domain</th>
+                <th style="width:8%;text-align:center;">Status</th>
+                <th style="width:20%;">Owner</th>
+                <th style="width:7%;text-align:center;">Members</th>
+                <th style="width:7%;text-align:center;">Instances</th>
+                <th style="width:9%;">Created</th>
+                <th style="width:9%;text-align:center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="orgs-tbody">
+              <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);">Select Organizations from the sidebar to load</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /app-shell -->
+
+<!-- Org Detail Modal -->
+<div class="modal-overlay" id="org-detail-modal" onclick="if(event.target===this)closeOrgDetail()" style="align-items:flex-start;padding:24px 0;overflow-y:auto;">
+  <div class="modal-box" style="max-width:720px;width:96vw;max-height:calc(100vh - 48px);overflow-y:auto;margin:auto;">
+    <div class="modal-title" id="odm-title">Organization</div>
+    <div id="odm-body" style="margin-top:16px;"></div>
+    <div class="modal-actions" style="margin-top:20px;">
+      <button class="modal-cancel" onclick="closeOrgDetail()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Reassign Instance Modal -->
+<div class="modal-overlay" id="admin-reassign-modal" onclick="if(event.target===this)closeAdminReassign()">
+  <div class="modal-box" style="max-width:440px;">
+    <div class="modal-close" onclick="closeAdminReassign()">×</div>
+    <div class="modal-title">Transfer Instance Ownership</div>
+    <div class="modal-sub">Transfer <strong id="arm-tenant-label"></strong> to a different org member.</div>
+    <input type="hidden" id="arm-org-id">
+    <input type="hidden" id="arm-tenant">
+    <div style="margin-top:16px;">
+      <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Transfer to member</label>
+      <select class="env-input" id="arm-user-select" style="width:100%;margin-top:6px;">
+        <option value="">— select member —</option>
+      </select>
+    </div>
+    <div id="arm-err" style="font-size:12px;color:var(--red);min-height:18px;margin-top:10px;"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeAdminReassign()">Cancel</button>
+      <button class="modal-confirm" id="arm-confirm-btn" onclick="confirmAdminReassign()">Transfer Ownership</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Delete Org Modal -->
+<div class="modal-overlay" id="admin-delete-org-modal" onclick="if(event.target===this)closeAdminDeleteOrg()">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-close" onclick="closeAdminDeleteOrg()">×</div>
+    <div class="modal-title" style="color:var(--red);">Delete Organization</div>
+    <div class="modal-sub">This action is <strong>irreversible</strong>. Instances will become ownerless. Type the org slug to confirm:</div>
+    <div style="background:color-mix(in srgb,var(--red) 8%,var(--bg));border:1px solid color-mix(in srgb,var(--red) 30%,transparent);border-radius:6px;padding:8px 12px;margin:14px 0 6px;font-family:'DM Mono',monospace;font-size:13px;color:var(--red);letter-spacing:0.5px;" id="ado-slug-label"></div>
+    <input type="hidden" id="ado-org-id">
+    <input class="env-input" type="text" id="ado-confirm-input" placeholder="type slug to confirm" autocomplete="off" style="width:100%;margin-top:10px;color:var(--text);"
+      oninput="document.getElementById('ado-err').textContent=''"
+      onkeydown="if(event.key==='Enter')confirmAdminDeleteOrg()">
+    <div id="ado-err" style="font-size:12px;color:var(--red);min-height:18px;margin-top:8px;"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeAdminDeleteOrg()">Cancel</button>
+      <button class="modal-confirm" id="ado-confirm-btn" onclick="confirmAdminDeleteOrg()" style="background:var(--red);border-color:var(--red);">Delete Organization</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Transfer Owner Modal -->
+<div class="modal-overlay" id="admin-transfer-owner-modal" onclick="if(event.target===this)closeAdminTransferOwner()">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-close" onclick="closeAdminTransferOwner()">×</div>
+    <div class="modal-title">Transfer Ownership</div>
+    <div class="modal-sub">Transfer <strong id="ato-org-name"></strong> to a new owner.</div>
+    <input type="hidden" id="ato-org-id">
+    <div style="margin-top:16px;">
+      <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">New owner email</label>
+      <input class="env-input" id="ato-new-email" type="email" placeholder="user@example.com" style="width:100%;margin-top:6px;"
+        onkeydown="if(event.key==='Enter')confirmAdminTransferOwner()">
+    </div>
+    <div id="ato-result" style="min-height:20px;font-size:12px;margin-top:10px;"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeAdminTransferOwner()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmAdminTransferOwner()">Transfer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Create Org Modal -->
+<div class="modal-overlay" id="admin-create-org-modal" onclick="if(event.target===this)closeAdminCreateOrg()">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-close" onclick="closeAdminCreateOrg()">×</div>
+    <div class="modal-title">Create Organization</div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Organization name <span style="color:var(--red);">*</span></label>
+        <input class="env-input" id="aco-name" type="text" placeholder="Acme Corp" style="width:100%;margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Slug <span style="font-weight:400;color:var(--muted);">optional — auto-generated if blank</span></label>
+        <input class="env-input" id="aco-slug" type="text" placeholder="acme-corp" style="width:100%;margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Owner email <span style="font-weight:400;color:var(--muted);">optional</span></label>
+        <input class="env-input" id="aco-owner-email" type="email" placeholder="owner@example.com" style="width:100%;margin-top:6px;">
+      </div>
+    </div>
+    <div id="aco-result" style="min-height:20px;font-size:12px;margin-top:12px;"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeAdminCreateOrg()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmAdminCreateOrg()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete instance modal -->
+<div class="modal-overlay" id="delete-modal" onclick="if(event.target===this)closeDeleteModal()">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeDeleteModal()">×</div>
+    <div class="modal-title">Remove instance</div>
+    <div class="modal-sub">
+      This will permanently remove <strong id="modal-tenant-name"></strong> and all its data.<br>
+      Type the instance name to confirm.
+    </div>
+    <input class="modal-input" type="text" id="modal-confirm-input" placeholder="" oninput="checkModalConfirm()">
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button class="modal-confirm" id="modal-confirm-btn" disabled onclick="confirmDelete()">Remove instance</button>
+    </div>
+  </div>
+</div>
+
+<!-- Connect Git modal -->
+<div class="modal-overlay" id="connect-git-modal" onclick="if(event.target===this)closeConnectGit()">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeConnectGit()">×</div>
+    <div class="modal-title">Connect Git Repo</div>
+    <div class="modal-sub">Tenant: <strong id="cg-tenant-name" style="color:var(--accent2);"></strong> — every push automatically deploys your changes.</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin:20px 0;">
+      <div>
+        <div class="field-label">Repository URL</div>
+        <input class="modal-input" type="text" id="cg-repo" placeholder="https://github.com/acme/their-cms" style="margin-bottom:0;">
+      </div>
+      <div>
+        <div class="field-label">Branch</div>
+        <input class="modal-input" type="text" id="cg-branch" placeholder="main" value="main" style="margin-bottom:0;">
+      </div>
+      <div>
+        <div class="field-label">Base Directory <span style="color:var(--muted);font-weight:400;">(optional)</span></div>
+        <input class="modal-input" type="text" id="cg-basedir" placeholder="apps/cms" style="margin-bottom:0;">
+      </div>
+      <div>
+        <div class="field-label">Node Version</div>
+        <select class="modal-input" id="cg-node" style="margin-bottom:0;">
+          <option value="22">Node 22 (LTS)</option>
+          <option value="20">Node 20 (LTS)</option>
+          <option value="18">Node 18 (LTS)</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding-top:4px;">
+        <input type="checkbox" id="cg-rotate" style="cursor:pointer;">
+        <label for="cg-rotate" style="font-size:12px;color:var(--muted);cursor:pointer;">Rotate deploy secret</label>
+      </div>
+    </div>
+    <div id="cg-result" style="margin-bottom:12px;"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeConnectGit()">Cancel</button>
+      <button class="modal-confirm" style="background:var(--accent2); color:#000;" onclick="confirmConnectGit()">Save configuration</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset password modal -->
+<div class="modal-overlay" id="reset-pass-modal" onclick="if(event.target===this)closeResetPass()">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeResetPass()">×</div>
+    <div class="modal-title">Reset password</div>
+    <div class="modal-sub">Set a new password for <strong id="rp-email-label" style="color:var(--accent2);font-weight:500;"></strong></div>
+    <input class="modal-input" type="password" id="rp-new-pass" placeholder="New password (min 8 chars)" style="margin-bottom:8px;">
+    <div id="rp-err" style="font-size:12px;color:var(--red);min-height:16px;margin-bottom:8px;"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeResetPass()">Cancel</button>
+      <button class="modal-confirm" style="background:var(--accent2); color:#000;" onclick="confirmResetPass()">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete user modal -->
+<div class="modal-overlay" id="delete-user-modal" onclick="if(event.target===this)closeDeleteUser()">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeDeleteUser()">×</div>
+    <div class="modal-title">Delete user</div>
+    <div class="modal-sub">Permanently delete <strong id="du-email-label" style="color:var(--red);"></strong> and their sessions.</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeDeleteUser()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmDeleteUser()">Confirm Deletion</button>
+    </div>
+  </div>
+</div>
+
+<!-- Broadcast modal -->
+<div class="modal-overlay" id="broadcast-modal" onclick="if(event.target===this)closeBroadcast()">
+  <div class="modal-box" style="max-width:500px;">
+    <div class="modal-close" onclick="closeBroadcast()">×</div>
+    <div class="modal-title">Broadcast Announcement</div>
+    <div class="modal-sub">Send a system-wide announcement to specific user groups.</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+      <div>
+        <div class="field-label">Recipients</div>
+        <select class="modal-input" id="bc-target" style="margin-bottom:0;">
+          <option value="all">All active users</option>
+          <option value="active">Active instance owners</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Subject</div>
+        <input class="modal-input" type="text" id="bc-subject" placeholder="System Notice…" style="margin-bottom:0;">
+      </div>
+      <div>
+        <div class="field-label">Message Payload</div>
+        <textarea class="modal-input" id="bc-body" rows="6" placeholder="Announcement text…" style="margin-bottom:0;resize:vertical;font-family:'DM Mono',monospace;height:auto;padding-top:12px;"></textarea>
+      </div>
+    </div>
+    <div id="bc-result" style="font-size:12px;min-height:16px;margin-bottom:10px;"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeBroadcast()">Cancel</button>
+      <button class="modal-confirm" style="background:var(--accent2); color:#000;" onclick="confirmBroadcast()">Dispatch Blast</button>
+    </div>
+  </div>
+</div>
+
+<!-- Subscription extend modal -->
+<div class="modal-overlay" id="extend-modal" onclick="if(event.target===this)closeExtend()">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeExtend()">×</div>
+    <div class="modal-title">Manual Subscription Extension</div>
+    <div class="modal-sub">Append additional service days to <strong id="extend-tenant-label" style="color:var(--accent2);font-weight:500;"></strong>.</div>
+    <div class="field-label" style="margin-bottom:8px;">Days to add</div>
+    <input class="modal-input" type="number" id="extend-days" min="1" max="365" value="30" placeholder="30">
+    <div id="extend-err" style="font-size:12px;color:var(--red);min-height:16px;margin-bottom:8px;"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeExtend()">Cancel</button>
+      <button class="modal-confirm" style="background:var(--accent2); color:#000;" onclick="confirmExtend()">Execute Extension</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tenant 360 Drawer -->
+<div class="drawer-overlay" id="drawer-360" onclick="if(event.target===this)closeTenant360()">
+  <div class="drawer-panel">
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-title" id="drawer-360-title">Tenant Overview</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="drawer-360-sub"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="btn btn-xs" style="background:var(--card2);color:var(--fg);border:1px solid var(--border);" onclick="openTransferTenantOwner(document.getElementById('drawer-360-title').textContent)" title="Transfer this tenant to a different user">Transfer Owner</button>
+        <button class="drawer-close" onclick="closeTenant360()">×</button>
+      </div>
+    </div>
+    <div class="drawer-body" id="drawer-360-body">
+      <div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<!-- Transfer Tenant Owner Modal -->
+<div class="modal-overlay" id="transfer-tenant-owner-modal" onclick="if(event.target===this)closeTransferTenantOwner()">
+  <div class="modal-box" style="max-width:440px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div class="modal-title">Transfer Tenant Owner</div>
+      <button onclick="closeTransferTenantOwner()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:24px;line-height:1;">×</button>
+    </div>
+    <div class="modal-sub">Move <strong id="tto-tenant-name" style="color:var(--fg);"></strong> to a different user's account. All subscriptions, invoices, and jobs will be reassigned to the new owner's organization.</div>
+    <input type="hidden" id="tto-tenant">
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <div class="field-label">New Owner Email</div>
+        <input class="field-input" type="email" id="tto-email" placeholder="newowner@example.com" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('tto-reason').focus()">
+      </div>
+      <div>
+        <div class="field-label">Reason <span style="color:var(--muted);font-weight:400;">(optional, logged in audit)</span></div>
+        <input class="field-input" type="text" id="tto-reason" placeholder="e.g. Account consolidation, customer request…"
+          onkeydown="if(event.key==='Enter')confirmTransferTenantOwner()">
+      </div>
+    </div>
+    <div id="tto-result" style="min-height:20px;font-size:12px;margin-top:10px;"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeTransferTenantOwner()">Cancel</button>
+      <button class="modal-confirm" id="tto-btn" onclick="confirmTransferTenantOwner()">Transfer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Grant Permission Modal -->
+<div class="modal-overlay" id="grant-perm-modal" onclick="if(event.target===this)closeGrantPerm()">
+  <div class="modal-box" style="max-width:480px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div class="modal-title">Grant Org Permission</div>
+      <button onclick="closeGrantPerm()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:24px;line-height:1;">×</button>
+    </div>
+    <div class="modal-sub" style="margin-bottom:20px;">
+      Assign <strong id="gp-email-label" style="color:var(--text);font-weight:600;font-family:'DM Mono',monospace;"></strong> to an organisation with a specific role — no DB access required.
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;">
+      <div>
+        <div class="field-label">Organisation</div>
+        <select class="field-input" id="gp-org-select" style="cursor:pointer;appearance:auto;">
+          <option value="">Loading organisations…</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Role</div>
+        <select class="field-input" id="gp-role-select" style="cursor:pointer;appearance:auto;">
+          <option value="viewer">Viewer — read-only access</option>
+          <option value="member" selected>Member — deploy &amp; manage</option>
+          <option value="developer">Developer — code &amp; secrets</option>
+          <option value="admin">Admin — billing &amp; team</option>
+          <option value="owner">Owner — full control</option>
+        </select>
+      </div>
+      <div style="background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.18);border-radius:var(--radius-sm);padding:10px 14px;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:6px;">Role capabilities</div>
+        <div id="gp-role-hint" style="font-size:11px;color:var(--muted);line-height:1.6;"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeGrantPerm()">Cancel</button>
+      <button id="gp-confirm-btn" onclick="confirmGrantPerm()" style="background:var(--accent);border:none;color:#fff;padding:8px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.15s;">
+        Grant Access
+      </button>
+    </div>
+    <div id="gp-err" style="font-size:12px;color:var(--red);margin-top:10px;min-height:16px;"></div>
+  </div>
+</div>
+
+<!-- Container Log Drawer -->
+
+<div class="toast" id="toast"></div>
+
+  
