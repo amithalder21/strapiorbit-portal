@@ -1,50 +1,78 @@
-# portal-next
+# strapiorbit-portal
 
-Next.js 15 (App Router) port of the original Vite-based `portal/` app.
-**Content, design, and functionality are preserved identically** — the original
-HTML markup, `style.css`, and vanilla JS modules are reused byte-for-byte.
-Only the build/serve layer changes from Vite → Next.js.
+Next.js 15 (App Router) portal for StrapOrbit — customer-facing landing page, dashboard, and admin console.
 
-## How the port works
+## Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Runtime**: Node.js 18+
+- **Styling**: Vanilla CSS (`src/style.css`) + per-page inline styles
+- **Payments**: Stripe Elements
+- **Icons**: Lucide
+- **Fonts**: Inter, DM Mono, sohne-var
+
+## Project structure
+
+```
+app/
+  (site)/          ← landing, dashboard, privacy, tos pages
+  admin/           ← admin console (/admin route)
+  layout.jsx       ← root layout
+content/           ← extracted HTML fragments (body markup per page)
+src/
+  admin.js         ← admin console vanilla JS (~3000 lines)
+  dashboard.js     ← dashboard entry
+  main.js          ← landing page entry
+  modules/         ← shared modules (payment, api, modals, form, etc.)
+  lib/             ← api-client
+  style.css        ← global styles
+public/            ← static assets (favicon, icons)
+nginx/             ← nginx config for production
+```
+
+## How the HTML/JS wiring works
+
+Each Next.js page has a `*Mount.jsx` client component that dynamically imports
+the corresponding vanilla JS entry file and dispatches a synthetic
+`DOMContentLoaded` event so all listeners fire as expected.
+
+HTML body markup is extracted into `content/*.body.html` and injected via
+`dangerouslySetInnerHTML` — no JSX conversion needed.
 
 | Concern | Approach |
-|---|---|
-| HTML markup | `<body>` contents of each page were extracted into `/content/*.body.html` and injected into Next.js pages via `dangerouslySetInnerHTML`. No JSX conversion — same bytes. |
-| CSS | `src/style.css` copied verbatim; imported once in `app/(site)/layout.jsx`. `admin` uses its own inline `<style>` from the original `admin.html` (kept in `content/admin.inline-style.css`). |
-| JS modules | Everything under `src/modules/`, `src/lib/`, plus `src/main.js`, `src/dashboard.js`, `src/admin.js` — copied unchanged except for three surgical edits (see below). |
-| Entry wiring | Each page has a `*Mount.jsx` client component that `import()`s the corresponding entry JS and dispatches a synthetic `DOMContentLoaded`, so the top-level listeners in `main.js`/`dashboard.js`/`admin.js` fire exactly as they did under Vite. |
-| External scripts | Google Fonts, Lucide icons, and Stripe.js load via `next/script` with strategies that match the original page ordering. |
-| URL back-compat | `next.config.mjs` rewrites `/index.html`, `/dashboard.html`, `/admin.html`, `/privacy.html`, `/tos.html` to their clean equivalents so old links keep working. |
-| Dev API proxy | `next.config.mjs` replicates the old `vite.config.js` proxy: in dev when `NEXT_PUBLIC_API_URL` is empty, `/api/*` forwards to the Flask backend on `:5000`. |
-
-## The three intentional JS touches
-
-All other changes are zero. These three are unavoidable because Vite-specific
-syntax doesn't work under Next.js:
-
-1. **`src/lib/api-client.js:15`** — `import.meta.env.VITE_API_URL`
-   → `process.env.NEXT_PUBLIC_API_URL`.
-2. **`src/main.js:4`** — removed the `import './style.css';` line.
-   CSS is now imported via `app/(site)/layout.jsx`.
-3. **`src/dashboard.js:4`** — removed the `import './style.css';` line. Same reason.
-
-Everything else (form wizard, Stripe flows, dashboard, admin console,
-animations, modals, API client behaviour) is the exact original code.
+|---------|----------|
+| HTML markup | Extracted to `content/*.body.html`, injected via `dangerouslySetInnerHTML` |
+| CSS | `src/style.css` imported in `app/(site)/layout.jsx`; admin uses `content/admin.inline-style.css` |
+| JS modules | Unchanged from original; mounted via `*Mount.jsx` client components |
+| External scripts | Fonts, Lucide, Stripe loaded via `next/script` |
+| URL back-compat | `next.config.mjs` rewrites `.html` URLs to clean equivalents |
+| Dev API proxy | `/api/*` proxied to Flask backend on `:5000` when `NEXT_PUBLIC_API_URL` is unset |
 
 ## Getting started
 
 ```bash
-cp .env.example .env.local   # leave NEXT_PUBLIC_API_URL empty for local dev
+cp .env.example .env.local   # set NEXT_PUBLIC_API_URL for your backend
 npm install
-npm run dev                  # serves on :5173 (same as Vite default)
+npm run dev                  # http://localhost:5173
 ```
 
-Routes:
+## Routes
 
-- `/` — landing page
-- `/dashboard` — customer portal
-- `/admin` — admin console (same hostname gate as before)
-- `/privacy`, `/tos`
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page |
+| `/dashboard` | Customer portal |
+| `/admin` | Admin console (hostname-gated) |
+| `/privacy` | Privacy policy |
+| `/tos` | Terms of service |
+
+## Environment variables
+
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_API_URL` | Backend API base URL. Leave empty in dev to proxy to `:5000` |
+
+Copy `.env.example` to `.env.local` and fill in values. **Never commit `.env.production` or `.env.local`.**
 
 ## Production build
 
@@ -53,6 +81,5 @@ npm run build
 npm start
 ```
 
-Or deploy to Vercel, Netlify, or any Node-capable host. The static assets from
-`src/assets/` and `public/` are served identically to the Vite output.
-# strapiorbit-portal
+Or deploy to any Node-capable host (Vercel, Coolify, VPS with nginx).
+See `nginx/strapiorbit.conf` for the nginx reverse-proxy config.

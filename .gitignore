@@ -7,16 +7,26 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & build output
 node_modules
 .next
 out
 *.local
 
-# Editor directories and files
+# Environment files — use .env.example as the template
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.*.local
+
+# IDE / tool config
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+.claude/
 *.suo
 *.ntvs*
 *.njsproj
