@@ -37,14 +37,15 @@ function _ensureStripe(cb) {
 }
 
 function _stripeCardStyle() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'classic';
   return {
     base: {
-      color: '#f0f2f7',
-      fontFamily: "'DM Mono', monospace",
-      fontSize: '14px',
-      lineHeight: '24px',
-      '::placeholder': { color: '#3a3f52' },
-      iconColor: '#7a8099',
+      color:       isLight ? '#061b31' : '#f0f2f7',
+      fontFamily:  "'DM Mono', monospace",
+      fontSize:    '14px',
+      lineHeight:  '24px',
+      '::placeholder': { color: isLight ? '#9aaab8' : '#3a3f52' },
+      iconColor:   isLight ? '#64748d' : '#7a8099',
     },
     invalid: { color: '#ef4444', iconColor: '#ef4444' }
   };
