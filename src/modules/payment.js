@@ -181,7 +181,7 @@ async function confirmRenewal() {
   const price  = plan === 'starter' ? '$29' : plan === 'pro' ? '$79' : '$199';
 
   try {
-    const intentData = await apiFetch('/api/create-payment-intent', {
+    const intentData = await authFetch('/api/create-payment-intent', {
       method: 'POST',
       body: JSON.stringify({ plan, type: 'renewal' }),
     });
