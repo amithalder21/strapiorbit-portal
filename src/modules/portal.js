@@ -387,7 +387,7 @@ function renderTenantCard(t, i) {
         <div class="dns-verify-instruction">Add this TXT record to your DNS zone for <code>${escJs(t.root_domain || t.domain)}</code>:</div>
         <div class="dns-verify-token" id="dns-token-${tid}">
           <code>${escJs(t.dns_token)}</code>
-          <button class="dns-copy-btn" data-copy="${escJs(t.dns_token)}" title="Copy to clipboard">&#x2398;</button>
+          <button class="dns-copy-btn" data-copy="${escJs(t.dns_token)}" title="Copy to clipboard">copy</button>
         </div>
         <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           ${isOwner ? `<button class="pact pact-primary dns-verify-btn" data-orgid="${escJs(t.org_id)}" data-tid="${tid}">Verify DNS</button>` : ''}
