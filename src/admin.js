@@ -127,6 +127,79 @@ const ALL_REGIONS = [
   { id: 'ap-prod', label: 'ASIA', subLabel: 'Asia Pacific'  },
 ];
 
+/* ════════════════════════════════════════════
+   CLIENT-SIDE PAGINATION
+   Usage:
+     _pagInit('sectionId', allRows, renderFn, 'pg-element-id')
+     _pagFilter('sectionId', filteredRows)   — after filter change
+     _pagGo('sectionId', pageNumber)         — called by pag-btn onclick
+════════════════════════════════════════════ */
+var _PAGE_SIZE = 25;
+var _pagSt = {};
+
+function _pagInit(id, allRows, renderFn, pagElId) {
+  _pagSt[id] = { filtered: allRows, page: 1, renderFn: renderFn, pagEl: pagElId };
+  _pagDraw(id);
+}
+
+function _pagFilter(id, filteredRows) {
+  if (!_pagSt[id]) return;
+  _pagSt[id].filtered = filteredRows;
+  _pagSt[id].page = 1;
+  _pagDraw(id);
+}
+
+function _pagGo(id, page) {
+  if (!_pagSt[id]) return;
+  _pagSt[id].page = page;
+  _pagDraw(id);
+  var mainArea = document.querySelector('.main-area');
+  if (mainArea) mainArea.scrollTop = 0;
+}
+
+function _pagDraw(id) {
+  var st = _pagSt[id];
+  if (!st) return;
+  var total = st.filtered.length;
+  var totalPages = Math.max(1, Math.ceil(total / _PAGE_SIZE));
+  var page = Math.max(1, Math.min(st.page, totalPages));
+  st.page = page;
+  var slice = st.filtered.slice((page - 1) * _PAGE_SIZE, page * _PAGE_SIZE);
+  st.renderFn(slice);
+  _drawPagBar(st.pagEl, total, page, id);
+  if (window.lucide) lucide.createIcons();
+}
+
+function _drawPagBar(elId, total, page, sectionId) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  var totalPages = Math.ceil(total / _PAGE_SIZE);
+  if (total === 0 || totalPages <= 1) { el.innerHTML = ''; return; }
+  var start = (page - 1) * _PAGE_SIZE + 1;
+  var end   = Math.min(page * _PAGE_SIZE, total);
+  var sid   = _esc(sectionId);
+  var prev  = page > 1
+    ? '<button class="pag-btn" onclick="_pagGo(\'' + sid + '\',' + (page - 1) + ')">&#8249;</button>'
+    : '<button class="pag-btn pag-disabled" disabled>&#8249;</button>';
+  var next  = page < totalPages
+    ? '<button class="pag-btn" onclick="_pagGo(\'' + sid + '\',' + (page + 1) + ')">&#8250;</button>'
+    : '<button class="pag-btn pag-disabled" disabled>&#8250;</button>';
+  var nums = [];
+  var lo = Math.max(1, page - 2), hi = Math.min(totalPages, page + 2);
+  if (lo > 1) {
+    nums.push('<button class="pag-btn pag-num" onclick="_pagGo(\'' + sid + '\',1)">1</button>');
+    if (lo > 2) nums.push('<span class="pag-ellipsis">…</span>');
+  }
+  for (var p = lo; p <= hi; p++) {
+    nums.push('<button class="pag-btn pag-num' + (p === page ? ' pag-active' : '') + '" onclick="_pagGo(\'' + sid + '\',' + p + ')">' + p + '</button>');
+  }
+  if (hi < totalPages) {
+    if (hi < totalPages - 1) nums.push('<span class="pag-ellipsis">…</span>');
+    nums.push('<button class="pag-btn pag-num" onclick="_pagGo(\'' + sid + '\',' + totalPages + ')">' + totalPages + '</button>');
+  }
+  el.innerHTML = '<div class="pag-bar"><span class="pag-info">' + start + '–' + end + ' of ' + total + '</span><div class="pag-btns">' + prev + nums.join('') + next + '</div></div>';
+}
+
 function renderGitCell(t) {
   var repo       = t.git_repo      || '';
   var lastDeploy = t.last_deploy_at || '';
@@ -273,10 +346,13 @@ async function loadTenants() {
     }
 
     _allTenantRows = data.tenants;
-    tbody.innerHTML = data.tenants.map(_renderTenantRow).join('');
     var countEl = document.getElementById('instances-filter-count');
     if (countEl) countEl.textContent = data.tenants.length + ' instances';
     if (_heatmapActive) renderHeatmap(_allTenantRows);
+    _pagInit('instances', _allTenantRows, function(rows) {
+      if (!rows.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted);">No instances match the filter.</td></tr>'; return; }
+      tbody.innerHTML = rows.map(_renderTenantRow).join('');
+    }, 'pg-instances');
 
   } catch (e) {
     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--red);">Error: ' + _esc(e.message) + '</td></tr>';
@@ -693,93 +769,85 @@ async function loadClusters() {
 ════════════════════════════════════════════ */
 var _resetPassEmail  = '';
 var _deleteUserEmail = '';
+var _allUserRows     = [];
+
+function _renderUsersTable(rows) {
+  var tbody = document.getElementById('users-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">👥</div><div class="empty-state-text">No users match.</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(function (u) {
+    var role      = u.role === 'admin' ? 'admin' : 'user';
+    var roleBadge = role === 'admin'
+      ? '<span class="badge b-p">admin</span>'
+      : '<span class="badge b-r">user</span>';
+    var registered = u.created_at ? u.created_at.slice(0,10) : '—';
+    var lastSeenParts = [];
+    if (u.last_session) lastSeenParts.push('<span style="color:var(--muted);font-size:12px;">' + _esc(timeAgo(u.last_session)) + '</span>');
+    if (u.active_sessions > 0) lastSeenParts.push(
+      '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--green);">' +
+      '<span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;"></span>' +
+      u.active_sessions + ' active</span>'
+    );
+    var lastSeenCell = lastSeenParts.length ? lastSeenParts.join('<br>') : '<span style="color:var(--faint);">—</span>';
+    var tenants = u.tenants || [];
+    var subCell = tenants.length === 0
+      ? '<span style="color:var(--faint);font-size:11px;">—</span>'
+      : tenants.map(function(t) {
+          var sc = (t.sub_status === 'active' || t.sub_status === 'free') ? 'var(--green)'
+            : (t.sub_status === 'past_due' || t.sub_status === 'expiring_soon') ? 'var(--amber)'
+            : (t.sub_status === 'expired' || t.sub_status === 'suspended' || t.sub_status === 'cancelled' || t.expired) ? 'var(--red)'
+            : 'var(--muted)';
+          var daysStr = t.days_left !== null && t.days_left !== undefined
+            ? ' · <span style="color:' + sc + ';">' + (t.expired ? 'expired' : t.days_left + 'd') + '</span>'
+            : (t.sub_status === 'free' ? ' · <span style="color:var(--green);">free</span>' : '');
+          return '<div style="font-size:11px;white-space:nowrap;margin-bottom:2px;">' +
+            '<span style="font-family:\'Source Code Pro\',monospace;color:var(--text);">' + _esc(t.tenant) + '</span>' +
+            ' <span style="color:var(--muted);">' + _esc(t.plan) + '</span>' +
+            daysStr + '</div>';
+        }).join('');
+    var ea = _esc(u.email);
+    var actionsCell =
+      '<div class="action-cell" style="display:flex;gap:5px;justify-content:center;align-items:center;flex-wrap:wrap;">' +
+        '<button class="btn btn-xs" onclick="openGrantPerm(this.dataset.e)" data-e="' + ea + '" title="Grant org permission" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.28);color:var(--accent);">' +
+          '<i data-lucide="shield-plus" style="width:11px;height:11px;"></i> Grant' +
+        '</button>' +
+        '<button class="btn btn-ghost btn-xs" onclick="openResetPass(this.dataset.e)" data-e="' + ea + '" title="Reset password">' +
+          '<i data-lucide="key" style="width:11px;height:11px;"></i> Reset' +
+        '</button>' +
+        '<button class="btn btn-danger btn-xs" onclick="openDeleteUser(this.dataset.e)" data-e="' + ea + '" title="Delete user">' +
+          '<i data-lucide="trash-2" style="width:11px;height:11px;"></i> Remove' +
+        '</button>' +
+      '</div>';
+    return '<tr data-email="' + ea + '" data-role="' + role + '">' +
+      '<td class="cell-mono" title="' + ea + '">' + _esc(u.email) + '</td>' +
+      '<td class="cell-mid">' + roleBadge + '</td>' +
+      '<td>' + _esc(registered) + '</td>' +
+      '<td>' + (u.instance_count || 0) + '</td>' +
+      '<td>' + subCell + '</td>' +
+      '<td>' + lastSeenCell + '</td>' +
+      '<td style="text-align:center;vertical-align:middle;">' + actionsCell + '</td>' +
+    '</tr>';
+  }).join('');
+}
 
 async function loadUsers() {
   var tbody = document.getElementById('users-tbody');
   tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Loading...</td></tr>';
   try {
-    var res  = await _AF('/api/admin/users', {
-      method: 'POST',
-      body: JSON.stringify({})
-    });
+    var res  = await _AF('/api/admin/users', { method: 'POST', body: JSON.stringify({}) });
     var data = await res.json();
     if (!data.ok) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--red);">' + _esc(data.error||'Error') + '</td></tr>'; return; }
-
     var count = data.users.length;
     document.getElementById('users-count').textContent = count + ' user' + (count !== 1 ? 's' : '');
     updateStatUsers(count);
-
     if (!count) {
-      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">👥</div><div class="empty-state-text">No users yet.</div></div></td></tr>';
+      _renderUsersTable([]);
       return;
     }
-
-    tbody.innerHTML = data.users.map(function (u) {
-      var role      = u.role === 'admin' ? 'admin' : 'user';
-      var roleBadge = role === 'admin'
-        ? '<span class="badge b-p">admin</span>'
-        : '<span class="badge b-r">user</span>';
-      var registered = u.created_at ? u.created_at.slice(0,10) : '—';
-
-      // Last seen: timeAgo + active sessions dot
-      var lastSeenParts = [];
-      if (u.last_session) lastSeenParts.push('<span style="color:var(--muted);font-size:12px;">' + _esc(timeAgo(u.last_session)) + '</span>');
-      if (u.active_sessions > 0) lastSeenParts.push(
-        '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--green);">' +
-        '<span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;"></span>' +
-        u.active_sessions + ' active</span>'
-      );
-      var lastSeenCell = lastSeenParts.length ? lastSeenParts.join('<br>') : '<span style="color:var(--faint);">—</span>';
-
-      // Subscriptions cell
-      var tenants = u.tenants || [];
-      var subCell = tenants.length === 0
-        ? '<span style="color:var(--faint);font-size:11px;">—</span>'
-        : tenants.map(function(t) {
-            var sc = (t.sub_status === 'active' || t.sub_status === 'free')
-                   ? 'var(--green)'
-                   : (t.sub_status === 'past_due' || t.sub_status === 'expiring_soon')
-                   ? 'var(--amber)'
-                   : (t.sub_status === 'expired' || t.sub_status === 'suspended' || t.sub_status === 'cancelled' || t.expired)
-                   ? 'var(--red)'
-                   : 'var(--muted)';
-            var daysStr = t.days_left !== null && t.days_left !== undefined
-              ? ' · <span style="color:' + sc + ';">' + (t.expired ? 'expired' : t.days_left + 'd') + '</span>'
-              : (t.sub_status === 'free' ? ' · <span style="color:var(--green);">free</span>' : '');
-            return '<div style="font-size:11px;white-space:nowrap;margin-bottom:2px;">' +
-              '<span style="font-family:\'DM Mono\',monospace;color:var(--text);">' + _esc(t.tenant) + '</span>' +
-              ' <span style="color:var(--muted);">' + _esc(t.plan) + '</span>' +
-              daysStr +
-            '</div>';
-          }).join('');
-
-      // Actions cell
-      var ea = _esc(u.email);
-      var actionsCell =
-        '<div class="action-cell" style="display:flex;gap:5px;justify-content:center;align-items:center;flex-wrap:wrap;">' +
-          '<button class="btn btn-xs" onclick="openGrantPerm(this.dataset.e)" data-e="' + ea + '" title="Grant org permission" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.28);color:var(--accent);">' +
-            '<i data-lucide="shield-plus" style="width:11px;height:11px;"></i> Grant' +
-          '</button>' +
-          '<button class="btn btn-ghost btn-xs" onclick="openResetPass(this.dataset.e)" data-e="' + ea + '" title="Reset password">' +
-            '<i data-lucide="key" style="width:11px;height:11px;"></i> Reset' +
-          '</button>' +
-          '<button class="btn btn-danger btn-xs" onclick="openDeleteUser(this.dataset.e)" data-e="' + ea + '" title="Delete user">' +
-            '<i data-lucide="trash-2" style="width:11px;height:11px;"></i> Remove' +
-          '</button>' +
-        '</div>';
-
-      return '<tr data-email="' + ea + '" data-role="' + role + '">' +
-        '<td class="cell-mono" title="' + ea + '">' + _esc(u.email) + '</td>' +
-        '<td class="cell-mid">' + roleBadge + '</td>' +
-        '<td>' + _esc(registered) + '</td>' +
-        '<td>' + (u.instance_count || 0) + '</td>' +
-        '<td>' + subCell + '</td>' +
-        '<td>' + lastSeenCell + '</td>' +
-        '<td style="text-align:center;vertical-align:middle;">' + actionsCell + '</td>' +
-      '</tr>';
-    }).join('');
-
-    // Reset filter count
+    _allUserRows = data.users;
+    _pagInit('users', _allUserRows, _renderUsersTable, 'pg-users');
     document.getElementById('users-filter-count').textContent = '';
   } catch (e) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--red);">' + _esc(e.message) + '</td></tr>';
@@ -789,17 +857,14 @@ async function loadUsers() {
 function filterUsers() {
   var search = (document.getElementById('user-search').value || '').toLowerCase();
   var role   = (document.getElementById('user-role-filter').value || '').toLowerCase();
-  var rows   = document.querySelectorAll('#users-tbody tr[data-email]');
-  var visible = 0;
-  rows.forEach(function(row) {
-    var email = (row.dataset.email || '').toLowerCase();
-    var r     = (row.dataset.role  || '').toLowerCase();
-    var show  = (!search || email.includes(search)) && (!role || r === role);
-    row.style.display = show ? '' : 'none';
-    if (show) visible++;
+  var visible = _allUserRows.filter(function(u) {
+    var email = (u.email || '').toLowerCase();
+    var r     = u.role === 'admin' ? 'admin' : 'user';
+    return (!search || email.includes(search)) && (!role || r === role);
   });
   var countEl = document.getElementById('users-filter-count');
-  if (countEl) countEl.textContent = (visible < rows.length) ? visible + ' / ' + rows.length + ' shown' : '';
+  if (countEl) countEl.textContent = visible.length < _allUserRows.length ? visible.length + ' / ' + _allUserRows.length + ' shown' : '';
+  _pagFilter('users', visible);
 }
 
 /* ════════════════════════════════════════════
@@ -819,28 +884,29 @@ async function loadRateLimits() {
     document.getElementById('rate-limits-sub').textContent =
       rows.length + ' IP(s) tracked — window: ' + (data.window_sec/60|0) + ' min, max: ' + data.max_hits + ' hits';
 
-    if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-state-icon">🛡</div><div class="empty-state-text">No rate-limited IPs.</div></div></td></tr>';
-      return;
+    function _renderRLPage(slice) {
+      if (!slice.length) {
+        tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-state-icon">🛡</div><div class="empty-state-text">No rate-limited IPs.</div></div></td></tr>';
+        return;
+      }
+      tbody.innerHTML = slice.map(function(r) {
+        var statusBadge = r.blocked ? '<span class="badge b-blocked">blocked</span>' : '<span class="badge b-ok">ok</span>';
+        var lastHit = r.last_hit ? new Date(r.last_hit * 1000).toLocaleString() : '—';
+        var unblockBtn = r.blocked
+          ? '<button class="btn btn-accent btn-xs" onclick="unblockIp(\'' + _esc(r.ip) + '\')" title="Unblock">' +
+              '<i data-lucide="shield-check" style="width:11px;height:11px;"></i> Unblock' +
+            '</button>'
+          : '';
+        return '<tr>' +
+          '<td class="cell-mono cell-trunc">' + _esc(r.ip) + '</td>' +
+          '<td style="text-align:center;vertical-align:middle;" class="cell-mono">' + r.hits + '</td>' +
+          '<td class="cell-dim">' + _esc(lastHit) + '</td>' +
+          '<td style="text-align:center;vertical-align:middle;">' + statusBadge + '</td>' +
+          '<td style="text-align:center;vertical-align:middle;">' + unblockBtn + '</td>' +
+        '</tr>';
+      }).join('');
     }
-    tbody.innerHTML = rows.map(function(r) {
-      var statusBadge = r.blocked
-        ? '<span class="badge b-blocked">blocked</span>'
-        : '<span class="badge b-ok">ok</span>';
-      var lastHit = r.last_hit ? new Date(r.last_hit * 1000).toLocaleString() : '—';
-      var unblockBtn = r.blocked
-        ? '<button class="btn btn-accent btn-xs" onclick="unblockIp(\'' + _esc(r.ip) + '\')" title="Unblock this IP">' +
-            '<i data-lucide="shield-check" style="width:11px;height:11px;"></i> Unblock' +
-          '</button>'
-        : '';
-      return '<tr>' +
-        '<td class="cell-mono cell-trunc">' + _esc(r.ip) + '</td>' +
-        '<td style="text-align:center;vertical-align:middle;" class="cell-mono">' + r.hits + '</td>' +
-        '<td class="cell-dim">' + _esc(lastHit) + '</td>' +
-        '<td style="text-align:center;vertical-align:middle;">' + statusBadge + '</td>' +
-        '<td style="text-align:center;vertical-align:middle;">' + unblockBtn + '</td>' +
-      '</tr>';
-    }).join('');
+    _pagInit('ratelimits', rows, _renderRLPage, 'pg-ratelimits');
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--red);">' + _esc(e.message) + '</td></tr>';
   }
@@ -849,52 +915,53 @@ async function loadRateLimits() {
 /* ════════════════════════════════════════════
    NOTIFICATIONS
 ════════════════════════════════════════════ */
+var _allNotifRows = [];
+
+function _renderNotifPage(rows) {
+  var tbody = document.getElementById('notif-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">📬</div><div class="empty-state-text">No notifications.</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(function(n) {
+    var badgeCls = n.status === 'sent' ? 'b-sent' : n.status === 'failed' ? 'b-failed' : 'b-pending';
+    var created  = n.created_at ? n.created_at.toString().substring(0,16).replace('T',' ') : '—';
+    var err = n.last_error
+      ? '<span style="color:var(--red);font-size:11px;font-family:\'Source Code Pro\',monospace;" title="'+_esc(n.last_error)+'">'+_esc(n.last_error.substring(0,60))+(n.last_error.length>60?'…':'')+'</span>'
+      : '<span style="color:var(--faint);">—</span>';
+    var resendBtn = (n.status === 'failed' || n.status === 'pending')
+      ? '<button class="btn btn-accent btn-xs" onclick="resendNotification(\''+n.id+'\')" title="Resend">' +
+          '<i data-lucide="send" style="width:11px;height:11px;"></i> Resend' +
+        '</button>'
+      : '';
+    var ea = _esc(n.email||'');
+    return '<tr data-email="'+ea+'">' +
+      '<td class="cell-mono" style="color:var(--accent);font-size:11px;">'+_esc(n.type)+'</td>' +
+      '<td class="cell-dim cell-trunc" title="'+ea+'">'+ea+'</td>' +
+      '<td style="text-align:center;vertical-align:middle;"><span class="badge '+badgeCls+'">'+_esc(n.status)+'</span></td>' +
+      '<td style="text-align:center;vertical-align:middle;" class="cell-dim">'+n.attempts+'</td>' +
+      '<td class="cell-mono cell-dim">'+_esc(created)+'</td>' +
+      '<td>'+err+'</td>' +
+      '<td style="text-align:center;vertical-align:middle;">'+resendBtn+'</td>' +
+    '</tr>';
+  }).join('');
+}
+
 async function loadNotifications() {
   var tbody  = document.getElementById('notif-tbody');
   var sub    = document.getElementById('notif-sub');
   var filter = document.getElementById('notif-filter').value;
   tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Loading...</td></tr>';
   try {
-    var res  = await _AF('/api/admin/notifications', {
-      method: 'POST',
-      body: JSON.stringify({status: filter, limit: 50})
-    });
+    var res  = await _AF('/api/admin/notifications', { method: 'POST', body: JSON.stringify({status: filter, limit: 200}) });
     var data = await res.json();
     if (!data.ok) throw new Error(data.error || 'Error');
     sub.textContent = data.count + ' notification(s)' + (filter ? ' · ' + filter : '');
-
     if (filter === 'pending' || !filter) updateStatPendingEmails(
       filter === 'pending' ? data.count : (data.notifications||[]).filter(function(n){return n.status==='pending';}).length
     );
-
-    var rows = data.notifications || [];
-    if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">📬</div><div class="empty-state-text">No notifications.</div></div></td></tr>';
-      return;
-    }
-    tbody.innerHTML = rows.map(function(n) {
-      var badgeCls = n.status === 'sent' ? 'b-sent' : n.status === 'failed' ? 'b-failed' : 'b-pending';
-      var created = n.created_at ? n.created_at.toString().substring(0,16).replace('T',' ') : '—';
-      var err = n.last_error
-        ? '<span style="color:var(--red);font-size:11px;font-family:\'DM Mono\',monospace;" title="'+_esc(n.last_error)+'">'+_esc(n.last_error.substring(0,60))+(n.last_error.length>60?'…':'')+'</span>'
-        : '<span style="color:var(--faint);">—</span>';
-      var resendBtn = (n.status === 'failed' || n.status === 'pending')
-        ? '<button class="btn btn-accent btn-xs" onclick="resendNotification(\''+n.id+'\')" title="Resend">' +
-            '<i data-lucide="send" style="width:11px;height:11px;"></i> Resend' +
-          '</button>'
-        : '';
-      var ea = _esc(n.email||'');
-      return '<tr data-email="'+ea+'">' +
-        '<td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--accent);">'+_esc(n.type)+'</td>' +
-        '<td class="cell-dim cell-trunc" title="'+ea+'">'+ea+'</td>' +
-        '<td style="text-align:center;vertical-align:middle;"><span class="badge '+badgeCls+'">'+_esc(n.status)+'</span></td>' +
-        '<td style="text-align:center;vertical-align:middle;" class="cell-dim">'+n.attempts+'</td>' +
-        '<td class="cell-mono cell-dim">'+_esc(created)+'</td>' +
-        '<td>'+err+'</td>' +
-        '<td style="text-align:center;vertical-align:middle;">'+resendBtn+'</td>' +
-      '</tr>';
-    }).join('');
-
+    _allNotifRows = data.notifications || [];
+    _pagInit('notifications', _allNotifRows, _renderNotifPage, 'pg-notifications');
     document.getElementById('notif-filter-count').textContent = '';
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--red);">'+_esc(e.message)+'</td></tr>';
@@ -902,16 +969,13 @@ async function loadNotifications() {
 }
 
 function filterNotifRows() {
-  var search = (document.getElementById('notif-email-search').value || '').toLowerCase();
-  var rows   = document.querySelectorAll('#notif-tbody tr[data-email]');
-  var visible = 0;
-  rows.forEach(function(row) {
-    var show = !search || (row.dataset.email || '').toLowerCase().includes(search);
-    row.style.display = show ? '' : 'none';
-    if (show) visible++;
+  var search  = (document.getElementById('notif-email-search').value || '').toLowerCase();
+  var visible = !search ? _allNotifRows : _allNotifRows.filter(function(n) {
+    return (n.email || '').toLowerCase().includes(search);
   });
   var countEl = document.getElementById('notif-filter-count');
-  if (countEl) countEl.textContent = search && visible < rows.length ? visible + ' / ' + rows.length + ' shown' : '';
+  if (countEl) countEl.textContent = search && visible.length < _allNotifRows.length ? visible.length + ' / ' + _allNotifRows.length + ' shown' : '';
+  _pagFilter('notifications', visible);
 }
 
 /* ════════════════════════════════════════════
@@ -1109,11 +1173,7 @@ function filterTenants() {
 
   var countEl = document.getElementById('instances-filter-count');
   if (countEl) countEl.textContent = visible.length + ' of ' + _allTenantRows.length;
-  if (!visible.length) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted);">No instances match the filter.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = visible.map(_renderTenantRow).join('');
+  _pagFilter('instances', visible);
 }
 
 function _tenantRegionLabel(t) {
@@ -1195,65 +1255,59 @@ async function loadJobs() {
       tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">No jobs found.</div></div></td></tr>';
       return;
     }
-    tbody.innerHTML = data.jobs.map(function(j) {
-      var sc = j.status === 'done' ? 'b-done' : j.status === 'error' ? 'b-error' : j.status === 'running' ? 'b-running' : 'b-queued';
-      var tc = j.type === 'provision' ? 'b-s' : j.type === 'upgrade' ? 'b-p' : j.type === 'delete' ? 'b-blocked' : 'b-r';
-      var typeLabel   = {provision:'Setup',upgrade:'Upgrade',delete:'Remove',build:'Deploy'}[j.type] || j.type;
-      var statusLabel = {queued:'Scheduled',running:'In progress',done:'Completed',error:'Failed'}[j.status] || j.status;
-
-      // Plan + Region combined cell
-      var pkg = j.package ? j.package.toLowerCase() : '—';
-      var pc  = pkg==='starter'?'b-s':pkg==='pro'?'b-p':pkg==='enterprise'?'b-e':'b-r';
-      var planRegion = '<span class="badge '+pc+'" style="font-size:10px;">'+_esc(pkg)+'</span>' +
-        (j.cluster_id ? '<br><span style="font-size:11px;color:var(--faint);font-family:\'DM Mono\',monospace;">'+_esc(j.cluster_id)+'</span>' : '');
-
-      // Timing combined cell
-      var queued   = j.queued_at   ? j.queued_at.toString().slice(0,16).replace('T',' ')   : null;
-      var finished = j.finished_at ? j.finished_at.toString().slice(0,16).replace('T',' ') : null;
-      var timing = '<span style="font-size:11px;color:var(--muted);font-family:\'DM Mono\',monospace;">' + _esc(queued || '—') + '</span>';
-      if (finished) timing += '<br><span style="font-size:11px;color:var(--faint);font-family:\'DM Mono\',monospace;">→ ' + _esc(finished) + '</span>';
-
-      // Result cell
-      var errMsg = j.result && j.result.error ? String(j.result.error) : '';
-      var result = errMsg
-        ? '<span style="color:var(--red);font-size:11px;" title="'+_esc(errMsg)+'">'+_esc(errMsg.slice(0,50))+'</span>'
-        : '<span style="color:var(--faint);font-size:11px;">—</span>';
-
-      var retryBtn = (j.status === 'error')
-        ? '<button class="btn btn-accent btn-xs" onclick="retryJob(this.dataset.j)" data-j="'+_esc(j.job_id)+'" title="Retry job">' +
-            '<i data-lucide="refresh-cw" style="width:11px;height:11px;"></i> Retry' +
-          '</button>'
-        : '';
-
-      return '<tr data-tenant="'+_esc(j.tenant)+'">' +
-        '<td class="cell-mid"><span class="badge '+tc+'">'+_esc(typeLabel)+'</span></td>' +
-        '<td class="cell-mid"><span class="badge '+sc+'">'+_esc(statusLabel)+'</span></td>' +
-        '<td class="cell-mono">'+_esc(j.tenant)+'</td>' +
-        '<td>'+planRegion+'</td>' +
-        '<td>'+timing+'</td>' +
-        '<td>'+result+'</td>' +
-        '<td style="text-align:center;vertical-align:middle;">'+retryBtn+'</td>' +
-      '</tr>';
-    }).join('');
-
-    // Re-apply tenant search filter if active
+    _allJobRows = data.jobs;
+    function _renderJobPage(rows) {
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">No jobs found.</div></div></td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(function(j) {
+        var sc = j.status==='done'?'b-done':j.status==='error'?'b-error':j.status==='running'?'b-running':'b-queued';
+        var tc = j.type==='provision'?'b-s':j.type==='upgrade'?'b-p':j.type==='delete'?'b-blocked':'b-r';
+        var typeLabel   = {provision:'Setup',upgrade:'Upgrade',delete:'Remove',build:'Deploy'}[j.type] || j.type;
+        var statusLabel = {queued:'Scheduled',running:'In progress',done:'Completed',error:'Failed'}[j.status] || j.status;
+        var pkg = j.package ? j.package.toLowerCase() : '—';
+        var pc  = pkg==='starter'?'b-s':pkg==='pro'?'b-p':pkg==='enterprise'?'b-e':'b-r';
+        var planRegion = '<span class="badge '+pc+'" style="font-size:10px;">'+_esc(pkg)+'</span>' +
+          (j.cluster_id ? '<br><span class="cell-faint">'+_esc(j.cluster_id)+'</span>' : '');
+        var queued   = j.queued_at   ? j.queued_at.toString().slice(0,16).replace('T',' ')   : null;
+        var finished = j.finished_at ? j.finished_at.toString().slice(0,16).replace('T',' ') : null;
+        var timing = '<span class="cell-faint">'+_esc(queued||'—')+'</span>';
+        if (finished) timing += '<br><span class="cell-faint">→ '+_esc(finished)+'</span>';
+        var errMsg = j.result && j.result.error ? String(j.result.error) : '';
+        var result = errMsg
+          ? '<span style="color:var(--red);font-size:11px;" title="'+_esc(errMsg)+'">'+_esc(errMsg.slice(0,50))+'</span>'
+          : '<span style="color:var(--faint);font-size:11px;">—</span>';
+        var retryBtn = (j.status==='error')
+          ? '<button class="btn btn-accent btn-xs" onclick="retryJob(this.dataset.j)" data-j="'+_esc(j.job_id)+'" title="Retry job">' +
+              '<i data-lucide="refresh-cw" style="width:11px;height:11px;"></i> Retry' +
+            '</button>'
+          : '';
+        return '<tr data-tenant="'+_esc(j.tenant)+'">' +
+          '<td class="cell-mid"><span class="badge '+tc+'">'+_esc(typeLabel)+'</span></td>' +
+          '<td class="cell-mid"><span class="badge '+sc+'">'+_esc(statusLabel)+'</span></td>' +
+          '<td class="cell-mono">'+_esc(j.tenant)+'</td>' +
+          '<td>'+planRegion+'</td>' +
+          '<td>'+timing+'</td>' +
+          '<td>'+result+'</td>' +
+          '<td style="text-align:center;vertical-align:middle;">'+retryBtn+'</td>' +
+        '</tr>';
+      }).join('');
+    }
+    _pagInit('jobs', _allJobRows, _renderJobPage, 'pg-jobs');
     filterJobRows();
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--red);">'+_esc(e.message)+'</td></tr>';
   }
 }
 
+var _allJobRows = [];
 function filterJobRows() {
-  var search = (document.getElementById('jobs-tenant-search').value || '').toLowerCase();
-  var rows   = document.querySelectorAll('#jobs-tbody tr[data-tenant]');
-  var visible = 0;
-  rows.forEach(function(row) {
-    var show = !search || (row.dataset.tenant || '').toLowerCase().includes(search);
-    row.style.display = show ? '' : 'none';
-    if (show) visible++;
-  });
+  var search  = (document.getElementById('jobs-tenant-search').value || '').toLowerCase();
+  var visible = !search ? _allJobRows : _allJobRows.filter(function(j) { return (j.tenant||'').toLowerCase().includes(search); });
   var countEl = document.getElementById('jobs-filter-count');
-  if (countEl) countEl.textContent = search && visible < rows.length ? visible + ' / ' + rows.length + ' shown' : '';
+  if (countEl) countEl.textContent = search && visible.length < _allJobRows.length ? visible.length + ' / ' + _allJobRows.length + ' shown' : '';
+  if (_allJobRows.length) _pagFilter('jobs', visible);
 }
 
 async function retryJob(jobId) {
@@ -1287,43 +1341,8 @@ async function loadSubscriptions() {
     var data = await res.json();
     if (!data.ok) throw new Error(data.error||'Error');
     sub.textContent = data.count + ' subscription(s)';
-    if (!data.subscriptions.length) {
-      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">💳</div><div class="empty-state-text">No subscriptions found.</div></div></td></tr>';
-      return;
-    }
-    tbody.innerHTML = data.subscriptions.map(function(s) {
-      var sc = s.status==='active'?'b-ok':s.status==='past_due'?'b-pending':s.status==='trialing'?'b-s':'b-r';
-      var pc = s.plan==='starter'?'b-s':s.plan==='pro'?'b-p':s.plan==='enterprise'?'b-e':'b-r';
-      var updated = s.updated_at ? timeAgo(s.updated_at) : '—';
-
-      // Billing cycle: expiry date + days-left badge
-      var pe = s.current_period_end ? s.current_period_end.toString().slice(0,10) : null;
-      var dc = s.days_left === null ? 'var(--faint)' : s.expired ? 'var(--red)' : s.days_left <= 7 ? 'var(--amber)' : 'var(--green)';
-      var daysStr = s.days_left === null ? '' : s.expired ? 'expired' : s.days_left + 'd left';
-      var billingCell = (pe ? '<span style="font-size:12px;color:var(--muted);font-family:\'DM Mono\',monospace;">'+_esc(pe)+'</span>' : '<span style="color:var(--faint);">—</span>') +
-        (daysStr ? '<br><span style="font-size:11px;color:'+dc+';">'+_esc(daysStr)+'</span>' : '');
-
-      // Gateway as small pill in plan cell
-      var gw = s.gateway ? ' <span style="font-size:10px;color:var(--faint);">'+_esc(s.gateway)+'</span>' : '';
-
-      var ta = _esc(s.tenant);
-      var ea = _esc(s.email || '');
-      return '<tr data-tenant="'+ta+'" data-email="'+ea+'">' +
-        '<td class="cell-mono">'+ta+'</td>' +
-        '<td class="cell-dim cell-trunc" title="'+ea+'">'+_esc(s.email||'—')+'</td>' +
-        '<td class="cell-mid"><span class="badge '+pc+'">'+_esc(s.plan)+'</span>'+gw+'</td>' +
-        '<td class="cell-mid"><span class="badge '+sc+'">'+_esc(s.status)+'</span></td>' +
-        '<td>'+billingCell+'</td>' +
-        '<td class="cell-dim">'+_esc(updated)+'</td>' +
-        '<td style="text-align:center;vertical-align:middle;">' +
-          '<button class="btn btn-accent btn-xs" onclick="openExtend(this.dataset.t)" data-t="'+ta+'" title="Extend subscription">' +
-            '<i data-lucide="calendar" style="width:11px;height:11px;"></i> Extend' +
-          '</button>' +
-        '</td>' +
-      '</tr>';
-    }).join('');
-
-    // Re-apply search if active
+    _allSubRows = data.subscriptions || [];
+    _pagInit('subscriptions', _allSubRows, _renderSubPage, 'pg-subscriptions');
     filterSubscriptions();
     document.getElementById('subs-filter-count').textContent = '';
   } catch(e) {
@@ -1331,19 +1350,49 @@ async function loadSubscriptions() {
   }
 }
 
+var _allSubRows = [];
+function _renderSubPage(rows) {
+  var tbody = document.getElementById('subs-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">💳</div><div class="empty-state-text">No subscriptions found.</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(function(s) {
+    var sc = s.status==='active'?'b-ok':s.status==='past_due'?'b-pending':s.status==='trialing'?'b-s':'b-r';
+    var pc = s.plan==='starter'?'b-s':s.plan==='pro'?'b-p':s.plan==='enterprise'?'b-e':'b-r';
+    var updated = s.updated_at ? timeAgo(s.updated_at) : '—';
+    var pe = s.current_period_end ? s.current_period_end.toString().slice(0,10) : null;
+    var dc = s.days_left === null ? 'var(--faint)' : s.expired ? 'var(--red)' : s.days_left <= 7 ? 'var(--amber)' : 'var(--green)';
+    var daysStr = s.days_left === null ? '' : s.expired ? 'expired' : s.days_left + 'd left';
+    var billingCell = (pe ? '<span class="cell-mono cell-dim">'+_esc(pe)+'</span>' : '<span style="color:var(--faint);">—</span>') +
+      (daysStr ? '<br><span style="font-size:11px;color:'+dc+';">'+_esc(daysStr)+'</span>' : '');
+    var gw  = s.gateway ? ' <span style="font-size:10px;color:var(--faint);">'+_esc(s.gateway)+'</span>' : '';
+    var ta  = _esc(s.tenant);
+    var ea  = _esc(s.email || '');
+    return '<tr data-tenant="'+ta+'" data-email="'+ea+'">' +
+      '<td class="cell-mono">'+ta+'</td>' +
+      '<td class="cell-dim cell-trunc" title="'+ea+'">'+_esc(s.email||'—')+'</td>' +
+      '<td class="cell-mid"><span class="badge '+pc+'">'+_esc(s.plan)+'</span>'+gw+'</td>' +
+      '<td class="cell-mid"><span class="badge '+sc+'">'+_esc(s.status)+'</span></td>' +
+      '<td>'+billingCell+'</td>' +
+      '<td class="cell-dim">'+_esc(updated)+'</td>' +
+      '<td style="text-align:center;vertical-align:middle;">' +
+        '<button class="btn btn-accent btn-xs" onclick="openExtend(this.dataset.t)" data-t="'+ta+'" title="Extend subscription">' +
+          '<i data-lucide="calendar" style="width:11px;height:11px;"></i> Extend' +
+        '</button>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
 function filterSubscriptions() {
-  var search = (document.getElementById('subs-search').value || '').toLowerCase();
-  var rows   = document.querySelectorAll('#subs-tbody tr[data-tenant]');
-  var visible = 0;
-  rows.forEach(function(row) {
-    var t = (row.dataset.tenant || '').toLowerCase();
-    var e = (row.dataset.email  || '').toLowerCase();
-    var show = !search || t.includes(search) || e.includes(search);
-    row.style.display = show ? '' : 'none';
-    if (show) visible++;
+  var search  = (document.getElementById('subs-search').value || '').toLowerCase();
+  var visible = !search ? _allSubRows : _allSubRows.filter(function(s) {
+    return (s.tenant||'').toLowerCase().includes(search) || (s.email||'').toLowerCase().includes(search);
   });
   var countEl = document.getElementById('subs-filter-count');
-  if (countEl) countEl.textContent = search && visible < rows.length ? visible + ' / ' + rows.length + ' shown' : '';
+  if (countEl) countEl.textContent = search && visible.length < _allSubRows.length ? visible.length + ' / ' + _allSubRows.length + ' shown' : '';
+  if (_allSubRows.length) _pagFilter('subscriptions', visible);
 }
 
 function openExtend(tenant) {
@@ -1459,25 +1508,27 @@ async function loadAuditLog() {
     if (!data.ok) throw new Error(data.error||'Error');
     var entries = data.entries || [];
     sub.textContent = entries.length + ' entries';
-    if (!entries.length) {
-      tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">📄</div><div class="empty-state-text">No audit entries found.</div></div></td></tr>';
-      return;
-    }
-    tbody.innerHTML = entries.map(function(e) {
-      var ts   = e.created_at ? e.created_at.toString().slice(0,19).replace('T',' ') : '—';
-      var metaStr = e.meta && Object.keys(e.meta).length ? JSON.stringify(e.meta) : '';
-      var meta = metaStr
-        ? '<span class="audit-meta" title="' + _esc(metaStr) + '">' + _esc(metaStr.slice(0,60)) + '</span>'
-        : '<span style="color:var(--faint);">—</span>';
-      return '<tr>' +
-        '<td class="cell-faint">'+_esc(ts)+'</td>' +
-        '<td class="cell-mono" style="color:var(--accent);">'+_esc(e.actor)+'</td>' +
-        '<td class="cell-mono">'+_esc(e.action)+'</td>' +
-        '<td class="cell-dim">'+_esc(e.target)+'</td>' +
-        '<td class="cell-faint">'+_esc(e.ip||'—')+'</td>' +
-        '<td>'+meta+'</td>' +
-      '</tr>';
-    }).join('');
+    _pagInit('auditlog', entries, function(rows) {
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">📄</div><div class="empty-state-text">No audit entries found.</div></div></td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(function(e) {
+        var ts = e.created_at ? e.created_at.toString().slice(0,19).replace('T',' ') : '—';
+        var metaStr = e.meta && Object.keys(e.meta).length ? JSON.stringify(e.meta) : '';
+        var meta = metaStr
+          ? '<span class="audit-meta" title="'+_esc(metaStr)+'">'+_esc(metaStr.slice(0,60))+'</span>'
+          : '<span style="color:var(--faint);">—</span>';
+        return '<tr>' +
+          '<td class="cell-faint">'+_esc(ts)+'</td>' +
+          '<td class="cell-mono" style="color:var(--accent);">'+_esc(e.actor)+'</td>' +
+          '<td class="cell-mono">'+_esc(e.action)+'</td>' +
+          '<td class="cell-dim">'+_esc(e.target)+'</td>' +
+          '<td class="cell-faint">'+_esc(e.ip||'—')+'</td>' +
+          '<td>'+meta+'</td>' +
+        '</tr>';
+      }).join('');
+    }, 'pg-auditlog');
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--red);">'+_esc(e.message)+'</td></tr>';
   }
@@ -2207,7 +2258,7 @@ async function loadSessions() {
     var nb = document.getElementById('nb-sessions');
     nb.textContent = _allSessions.length;
     nb.classList.toggle('show', _allSessions.length > 0);
-    _renderSessions(_allSessions);
+    _pagInit('sessions', _allSessions, _renderSessions, 'pg-sessions');
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--red);">Error: ' + _esc(e.message) + '</td></tr>';
   }
@@ -2215,8 +2266,8 @@ async function loadSessions() {
 
 function filterSessions() {
   var q = (document.getElementById('sessions-search').value || '').toLowerCase();
-  if (!q) { _renderSessions(_allSessions); return; }
-  _renderSessions(_allSessions.filter(function(s) {
+  if (!q) { _pagFilter('sessions', _allSessions); return; }
+  _pagFilter('sessions', _allSessions.filter(function(s) {
     return (s.email||'').toLowerCase().includes(q) || (s.ip||'').toLowerCase().includes(q);
   }));
 }
@@ -2284,36 +2335,34 @@ async function loadInvoices() {
     if (!d.ok) throw new Error(d.error || 'Error');
     var invoices = d.invoices || [];
     sub.textContent = invoices.length + ' invoice(s)' + (tenantF ? ' for ' + tenantF : '');
-    if (!invoices.length) {
-      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">🧾</div><div class="empty-state-text">No invoices found.</div></div></td></tr>';
-      return;
-    }
-    tbody.innerHTML = invoices.map(function(inv) {
-      var sc = inv.status === 'paid' ? 'b-ok' : inv.status === 'void' ? 'b-r' : inv.status === 'draft' ? 'b-pending' : 'b-blocked';
-      var amt = '$' + ((inv.amount_cents||0)/100).toFixed(2);
-      var dt  = (inv.issued_at||'').toString().slice(0,10);
-      var canVoid = inv.status !== 'void' && inv.status !== 'uncollectible';
-      // Tenant + Email combined cell
-      var tenantCell = '<span style="font-family:\'DM Mono\',monospace;font-size:12px;">' + _esc(inv.tenant) + '</span>' +
-        (inv.email ? '<br><span style="font-size:11px;color:var(--muted);">' + _esc(inv.email) + '</span>' : '');
-      return '<tr>' +
-        '<td style="font-family:\'DM Mono\',monospace;font-size:12px;">' + _esc(inv.invoice_number) + '</td>' +
-        '<td>' + tenantCell + '</td>' +
-        '<td style="font-size:12px;">' + _esc(inv.plan||'—') + '</td>' +
-        '<td style="font-family:\'DM Mono\',monospace;font-size:12px;">' + _esc(amt) + '</td>' +
-        '<td><span class="badge ' + sc + '">' + _esc(inv.status) + '</span></td>' +
-        '<td style="font-size:12px;color:var(--muted);">' + _esc(dt) + '</td>' +
-        '<td style="text-align:center;">' +
-          (canVoid
-            ? '<button class="btn btn-danger btn-xs" onclick="voidInvoice(this.dataset.id)" data-id="' + _esc(String(inv.id)) + '" title="Void invoice">' +
-                '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-              '</button>'
-            : '') +
-        '</td></tr>';
-    }).join('');
+    _pagInit('invoices', invoices, function(rows) {
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">🧾</div><div class="empty-state-text">No invoices found.</div></div></td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(function(inv) {
+        var sc = inv.status==='paid'?'b-ok':inv.status==='void'?'b-r':inv.status==='draft'?'b-pending':'b-blocked';
+        var amt = '$' + ((inv.amount_cents||0)/100).toFixed(2);
+        var dt  = (inv.issued_at||'').toString().slice(0,10);
+        var canVoid = inv.status !== 'void' && inv.status !== 'uncollectible';
+        var tenantCell = '<span class="cell-mono" style="font-size:12px;">'+_esc(inv.tenant)+'</span>' +
+          (inv.email ? '<br><span style="font-size:11px;color:var(--muted);">'+_esc(inv.email)+'</span>' : '');
+        return '<tr>' +
+          '<td class="cell-mono" style="font-size:12px;">'+_esc(inv.invoice_number)+'</td>' +
+          '<td>'+tenantCell+'</td>' +
+          '<td style="font-size:12px;">'+_esc(inv.plan||'—')+'</td>' +
+          '<td class="cell-mono" style="font-size:12px;">'+_esc(amt)+'</td>' +
+          '<td><span class="badge '+sc+'">'+_esc(inv.status)+'</span></td>' +
+          '<td style="font-size:12px;color:var(--muted);">'+_esc(dt)+'</td>' +
+          '<td style="text-align:center;">' +
+            (canVoid ? '<button class="btn btn-danger btn-xs" onclick="voidInvoice(this.dataset.id)" data-id="'+_esc(String(inv.id))+'" title="Void invoice">' +
+              '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' : '') +
+          '</td></tr>';
+      }).join('');
+    }, 'pg-invoices');
     document.getElementById('inv-filter-count').textContent = '';
   } catch(e) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--red);">Error: ' + _esc(e.message) + '</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--red);">Error: '+_esc(e.message)+'</td></tr>';
   }
 }
 
@@ -2389,7 +2438,7 @@ async function loadOrganizations() {
     if (!d.ok) throw new Error(d.error || 'Error');
     _allOrgs = d.organizations || [];
     if (sub) sub.textContent = _allOrgs.length + ' organization(s)';
-    _renderOrgsTable(_allOrgs);
+    _pagInit('organizations', _allOrgs, _renderOrgsTable, 'pg-organizations');
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--red);">Error: ' + _esc(e.message) + '</td></tr>';
   }
@@ -2397,8 +2446,8 @@ async function loadOrganizations() {
 
 function filterOrgs() {
   var q = (document.getElementById('orgs-search')?.value || '').toLowerCase();
-  if (!q) { _renderOrgsTable(_allOrgs); return; }
-  _renderOrgsTable(_allOrgs.filter(function(o) {
+  if (!q) { _pagFilter('organizations', _allOrgs); return; }
+  _pagFilter('organizations', _allOrgs.filter(function(o) {
     return (o.name||'').toLowerCase().includes(q)
         || (o.root_domain||'').toLowerCase().includes(q)
         || (o.slug||'').toLowerCase().includes(q)

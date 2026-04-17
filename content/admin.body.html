@@ -111,7 +111,7 @@
     </button>
     <div class="sidebar-footer">
       <div class="logo-mark" style="width:24px;height:24px;font-size:9px;">SO</div>
-      Strapi Orbit <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:auto;">v1.0.0</span>
+      Strapi Orbit <span style="font-size:10px;color:var(--faint);margin-left:auto;">v1.0.0</span>
     </div>
   </aside>
 
@@ -320,6 +320,7 @@
             </tbody>
           </table>
         </div><!-- /table-view -->
+        <div id="pg-instances"></div>
       </div>
 
       <!-- Bulk action bar -->
@@ -466,6 +467,7 @@
             </tbody>
           </table>
         </div>
+        <div id="pg-users"></div>
       </div>
     </div>
 
@@ -517,6 +519,7 @@
             </tbody>
           </table>
         </div>
+        <div id="pg-notifications"></div>
       </div>
     </div>
 
@@ -577,6 +580,7 @@
             </tbody>
           </table>
         </div>
+        <div id="pg-jobs"></div>
       </div>
     </div>
 
@@ -630,6 +634,7 @@
             </tbody>
           </table>
         </div>
+        <div id="pg-subscriptions"></div>
       </div>
     </div>
 
@@ -739,6 +744,7 @@
             </tbody>
           </table>
         </div>
+        <div id="pg-invoices"></div>
       </div>
     </div>
 
@@ -795,6 +801,7 @@
             </tbody>
           </table>
         </div>
+        <div id="pg-auditlog"></div>
       </div>
     </div>
 
@@ -866,7 +873,7 @@
           </div>
           <!-- Restore row -->
           <div style="border-top:1px solid var(--border);padding-top:14px;">
-            <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">Restore from backup</div>
+            <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px;">Restore from backup</div>
             <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">
               Upload a <code style="font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;background:var(--bg3);padding:1px 5px;border-radius:3px;">.zip</code> file downloaded from this panel.
               The DB restore runs inside a single transaction — if anything fails the DB is rolled back automatically. Asset files are always restored.
@@ -951,6 +958,7 @@
             </tbody>
           </table>
         </div>
+        <div id="pg-ratelimits"></div>
       </div>
     </div>
 
@@ -995,6 +1003,7 @@
             </tbody>
           </table>
         </div>
+        <div id="pg-sessions"></div>
       </div>
     </div>
 
@@ -1041,6 +1050,7 @@
             </tbody>
           </table>
         </div>
+        <div id="pg-organizations"></div>
       </div>
     </div>
 
@@ -1068,7 +1078,7 @@
     <input type="hidden" id="arm-tenant">
     <div style="margin-top:16px;">
       <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Transfer to member</label>
-      <select class="env-input" id="arm-user-select" style="width:100%;margin-top:6px;">
+      <select class="field-input" id="arm-user-select" style="width:100%;margin-top:6px;">
         <option value="">— select member —</option>
       </select>
     </div>
@@ -1088,7 +1098,7 @@
     <div class="modal-sub">This action is <strong>irreversible</strong>. Instances will become ownerless. Type the org slug to confirm:</div>
     <div style="background:color-mix(in srgb,var(--red) 8%,var(--bg));border:1px solid color-mix(in srgb,var(--red) 30%,transparent);border-radius:6px;padding:8px 12px;margin:14px 0 6px;font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;font-size:13px;color:var(--red);letter-spacing:0.5px;" id="ado-slug-label"></div>
     <input type="hidden" id="ado-org-id">
-    <input class="env-input" type="text" id="ado-confirm-input" placeholder="type slug to confirm" autocomplete="off" style="width:100%;margin-top:10px;color:var(--text);"
+    <input class="field-input" type="text" id="ado-confirm-input" placeholder="type slug to confirm" autocomplete="off" style="width:100%;margin-top:10px;color:var(--text);"
       oninput="document.getElementById('ado-err').textContent=''"
       onkeydown="if(event.key==='Enter')confirmAdminDeleteOrg()">
     <div id="ado-err" style="font-size:12px;color:var(--red);min-height:18px;margin-top:8px;"></div>
@@ -1108,7 +1118,7 @@
     <input type="hidden" id="ato-org-id">
     <div style="margin-top:16px;">
       <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">New owner email</label>
-      <input class="env-input" id="ato-new-email" type="email" placeholder="user@example.com" style="width:100%;margin-top:6px;"
+      <input class="field-input" id="ato-new-email" type="email" placeholder="user@example.com" style="width:100%;margin-top:6px;"
         onkeydown="if(event.key==='Enter')confirmAdminTransferOwner()">
     </div>
     <div id="ato-result" style="min-height:20px;font-size:12px;margin-top:10px;"></div>
@@ -1127,15 +1137,15 @@
     <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px;">
       <div>
         <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Organization name <span style="color:var(--red);">*</span></label>
-        <input class="env-input" id="aco-name" type="text" placeholder="Acme Corp" style="width:100%;margin-top:6px;">
+        <input class="field-input" id="aco-name" type="text" placeholder="Acme Corp" style="width:100%;margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Slug <span style="font-weight:400;color:var(--muted);">optional — auto-generated if blank</span></label>
-        <input class="env-input" id="aco-slug" type="text" placeholder="acme-corp" style="width:100%;margin-top:6px;">
+        <input class="field-input" id="aco-slug" type="text" placeholder="acme-corp" style="width:100%;margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;">Owner email <span style="font-weight:400;color:var(--muted);">optional</span></label>
-        <input class="env-input" id="aco-owner-email" type="email" placeholder="owner@example.com" style="width:100%;margin-top:6px;">
+        <input class="field-input" id="aco-owner-email" type="email" placeholder="owner@example.com" style="width:100%;margin-top:6px;">
       </div>
     </div>
     <div id="aco-result" style="min-height:20px;font-size:12px;margin-top:12px;"></div>
@@ -1334,7 +1344,7 @@
       <button onclick="closeGrantPerm()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:24px;line-height:1;">×</button>
     </div>
     <div class="modal-sub" style="margin-bottom:20px;">
-      Assign <strong id="gp-email-label" style="color:var(--text);font-weight:600;font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;"></strong> to an organisation with a specific role — no DB access required.
+      Assign <strong id="gp-email-label" style="color:var(--text);font-weight:500;font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;"></strong> to an organisation with a specific role — no DB access required.
     </div>
     <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;">
       <div>
@@ -1354,7 +1364,7 @@
         </select>
       </div>
       <div style="background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.18);border-radius:var(--radius-sm);padding:10px 14px;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-bottom:6px;">Role capabilities</div>
+        <div style="font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--accent);font-family:'Source Code Pro','SFMono-Regular','DM Mono',monospace;margin-bottom:6px;">Role capabilities</div>
         <div id="gp-role-hint" style="font-size:11px;color:var(--muted);line-height:1.6;"></div>
       </div>
     </div>

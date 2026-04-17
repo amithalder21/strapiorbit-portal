@@ -1362,3 +1362,65 @@ html[data-theme="light"] .data-table tbody tr:nth-child(even) td {
 /* Selection color — violet instead of browser default */
 ::selection { background: rgba(139,92,246,0.35); color: var(--text); }
 html[data-theme="light"] ::selection { background: rgba(124,58,237,0.20); color: var(--text); }
+
+/* ══════════════════════════════════════
+   PAGINATION BAR
+══════════════════════════════════════ */
+.pag-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pag-info {
+  font-size: 11px;
+  color: var(--faint);
+  font-family: 'Source Code Pro', 'SFMono-Regular', 'DM Mono', monospace;
+}
+.pag-btns {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.pag-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 26px;
+  padding: 0 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  color: var(--muted);
+  font-size: 11px;
+  font-family: 'Source Code Pro', 'SFMono-Regular', 'DM Mono', monospace;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.pag-btn:hover:not(:disabled):not(.pag-disabled) {
+  background: var(--bg-lifted);
+  border-color: var(--border2);
+  color: var(--text);
+}
+.pag-btn.pag-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 500;
+}
+.pag-btn.pag-disabled,
+.pag-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.pag-ellipsis {
+  font-size: 11px;
+  color: var(--faint);
+  padding: 0 3px;
+  line-height: 26px;
+}
