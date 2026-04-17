@@ -1032,7 +1032,7 @@ async function loadBuilds(tenant, tid) {
         <span class="dp-val">
           <span style="font-size:12px; color:var(--text);">${ts}</span>
           <span style="color:${sc}; width:80px; text-align:right;">${label}</span>
-          <button class="pact" style="font-size:11px; padding:3px 10px;" data-action="view-log" data-tenant="${escJs(tenant)}" data-job="${b.job_id}" data-tid="${tid}">View log</button>
+          <button class="copy-btn" data-action="view-log" data-tenant="${escJs(tenant)}" data-job="${b.job_id}" data-tid="${tid}">View log</button>
         </span>
       </div>`;
     }).join('');
