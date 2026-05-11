@@ -246,7 +246,7 @@
         </div>
         <div class="specs-row">
           <span class="spec-key">Database</span>
-          <span class="spec-val spec-val-accent">MySql 8</span>
+          <span class="spec-val spec-val-accent">MySQL 8</span>
         </div>
         <div class="specs-row">
           <span class="spec-key">File storage</span>
@@ -401,27 +401,27 @@
           <!-- Step 1: Account -->
           <div id="step-1" class="form-step">
             <div class="field">
-              <label>Name</label>
-              <input type="text" placeholder="Alex Reed" id="name" autocomplete="name" required>
+              <label for="name">Name</label>
+              <input type="text" placeholder="Alex Reed" id="name" name="name" autocomplete="name" required>
               <div class="field-error" id="err-name"></div>
             </div>
             <div class="field">
-              <label>Phone number</label>
-              <input type="tel" placeholder="+1 (555) 000-0000" id="phone" autocomplete="tel" required>
+              <label for="phone">Phone number</label>
+              <input type="tel" placeholder="+1 (555) 000-0000" id="phone" name="phone" autocomplete="tel" required>
               <div class="field-error" id="err-phone"></div>
             </div>
             <div class="field">
-              <label>Email address</label>
-              <input type="email" placeholder="alex@company.com" id="email" autocomplete="email" required>
+              <label for="email">Email address</label>
+              <input type="email" placeholder="alex@company.com" id="email" name="email" autocomplete="email" required>
               <div class="field-error" id="err-email"></div>
             </div>
             <div class="field">
-              <label style="display:flex;align-items:center;gap:8px;">
+              <label for="company" style="display:flex;align-items:center;gap:8px;">
                 Organization domain
                 <span style="font-size:10px;color:var(--faint);font-weight:400;letter-spacing:0;text-transform:none;">auto-detected from your email</span>
               </label>
-              <input type="text" id="company" placeholder="detected from email…"
-                readonly tabindex="-1"
+              <input type="text" id="company" name="company" placeholder="detected from email…"
+                readonly tabindex="-1" autocomplete="organization"
                 style="background:var(--bg-lifted);color:var(--muted);cursor:default;">
               <div class="field-error" id="err-company"></div>
             </div>
@@ -431,20 +431,20 @@
           <!-- Step 2: Instance -->
           <div id="step-2" class="form-step" style="display:none;">
             <div class="field">
-              <label style="display:flex;align-items:center;justify-content:space-between;">
-                <span>Instance name <span style="color:var(--faint);font-weight:400;letter-spacing:0;">(your unique
-                    identifier)</span></span>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <label for="iname"><span>Instance name <span style="color:var(--faint);font-weight:400;letter-spacing:0;">(your unique
+                    identifier)</span></span></label>
                 <button type="button" id="regen-btn" class="regen-btn" title="Generate a new name">Regenerate</button>
-              </label>
-              <input type="text" placeholder="velvet-blade-74" id="iname" autocomplete="off">
+              </div>
+              <input type="text" placeholder="velvet-blade-74" id="iname" name="iname" autocomplete="off">
               <div style="font-size:12px;color:var(--muted);margin-top:6px;font-weight:300;">Lowercase letters, numbers,
                 and hyphens only. This becomes your subdomain.</div>
               <div class="field-error" id="err-tenant"></div>
             </div>
             <div class="field">
-              <label>Custom domain <span
+              <label for="domain">Custom domain <span
                   style="color:var(--faint);font-weight:400;letter-spacing:0;">optional</span></label>
-              <input type="text" placeholder="cms.mycompany.com" id="domain" autocomplete="off">
+              <input type="text" placeholder="cms.mycompany.com" id="domain" name="domain" autocomplete="off">
               <div style="font-size:12px;color:var(--muted);margin-top:6px;font-weight:300;">Leave empty to use your
                 instance name as subdomain.</div>
               <div class="field-error" id="err-domain"></div>
@@ -454,7 +454,7 @@
               <div class="plan-selector" id="plan-selector">
                 <div class="plan-opt selected" data-plan="starter">
                   <span class="plan-opt-name">Starter</span>
-                  <span class="plan-opt-price">Free</span>
+                  <span class="plan-opt-price">$29/mo</span>
                 </div>
                 <div class="plan-opt" data-plan="pro">
                   <span class="plan-opt-name">Pro</span>
@@ -482,22 +482,22 @@
               <div class="field-error" id="err-region"></div>
             </div>
             <div class="field">
-              <label>Git repo <span style="color:var(--faint);font-weight:400;letter-spacing:0;">optional — auto-deploy
+              <label for="igit">Git repo <span style="color:var(--faint);font-weight:400;letter-spacing:0;">optional — auto-deploy
                   on push</span></label>
-              <input type="text" placeholder="https://github.com/acme/their-cms" id="igit" autocomplete="off">
+              <input type="text" placeholder="https://github.com/acme/their-cms" id="igit" name="git_repo" autocomplete="off">
             </div>
             <div class="field" id="git-branch-field" style="display:none;">
-              <label>Branch</label>
-              <input type="text" placeholder="main" id="igit-branch" value="main" autocomplete="off">
+              <label for="igit-branch">Branch</label>
+              <input type="text" placeholder="main" id="igit-branch" name="git_branch" value="main" autocomplete="off">
             </div>
             <div class="field" id="git-basedir-field" style="display:none;">
-              <label>Base directory <span style="color:var(--faint);font-weight:400;letter-spacing:0;">optional — for
+              <label for="igit-basedir">Base directory <span style="color:var(--faint);font-weight:400;letter-spacing:0;">optional — for
                   monorepos</span></label>
-              <input type="text" placeholder="apps/cms" id="igit-basedir" autocomplete="off">
+              <input type="text" placeholder="apps/cms" id="igit-basedir" name="git_basedir" autocomplete="off">
             </div>
             <div class="field" id="git-node-field" style="display:none;">
-              <label>Node version</label>
-              <select id="igit-node">
+              <label for="igit-node">Node version</label>
+              <select id="igit-node" name="git_node">
                 <option value="22">Node 22 (LTS — recommended)</option>
                 <option value="20">Node 20 (LTS)</option>
                 <option value="18">Node 18 (LTS)</option>
